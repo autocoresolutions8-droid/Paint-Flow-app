@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#FF5722">
+    <title>PaintFlow - Contractor Pro</title>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" async></script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+    <style>
+        :root {
+            --primary: #FF5722; 
+            --primary-dark: #E64A19;
+            --secondary: #263238; 
+            --bg: #F5F7FA;
+            --surface: #FFFFFF;
+            --border: #E0E0E0;
+            --text: #333333;
+            --text-light: #757575;
+            --danger: #F44336;
+            --gold: #FFC107;
+            --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            --shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { margin: 0; padding: 0; font-family: var(--font-main); background: var(--bg); color: var(--text); padding-bottom: 80px; }
+
+        /* Typography */
+        h1, h2, h3, h4 { margin: 0; font-weight: 600; }
+        .text-sm { font-size: 0.85rem; color: var(--text-light); }
+        .text-center { text-align: center; }
+        .text-right { text-align: right; }
+        .text-bold { font-weight: 700; }
+        .text-primary { color: var(--primary); }
+        .text-gold { color: #F57F17; }
+
+        /* Layout */
+        .container { max-width: 800px; margin: 0 auto; padding: 15px; }
+        .card { background: var(--surface); border-radius: 12px; padding: 20px; box-shadow: var(--shadow); margin-bottom: 20px; position: relative; }
+        .flex { display: flex; align-items: center; }
+        .flex-between { justify-content: space-between; }
+        .gap-10 { gap: 10px; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+
+        /* Inputs */
+        .form-group { margin-bottom: 15px; width: 100%; }
+        label { display: block; margin-bottom: 5px; font-size: 0.9rem; font-weight: 500; color: var(--secondary); }
+        input, select, textarea {
+            width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px;
+            font-size: 1rem; transition: border 0.2s; background: #FAFAFA;
+        }
+        input:focus { border-color: var(--primary); outline: none; background: #FFF; }
+        input:disabled { background: #F5F5F5; color: #AAA; cursor: not-allowed; border-color: #EEE; }
+
+        /* Toggle Switch */
+        .switch { position: relative; display: inline-block; width: 52px; height: 28px; flex-shrink: 0; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #CCC; transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--primary); }
+        input:checked + .slider:before { transform: translateX(24px); }
+
+        /* Buttons */
+        .btn { display: inline-flex; justify-content: center; align-items: center; padding: 12px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; border: none; transition: all 0.2s; font-size: 1rem; width: 100%; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-secondary { background: var(--secondary); color: white; }
+        .btn-whatsapp { background: #25D366; color: white; }
+        .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); }
+        .btn-danger { background: #FFEBEE; color: var(--danger); }
+        .btn-gold { background: linear-gradient(135deg, #FFC107, #FF9800); color: black; border:none;}
+        .btn-sm { padding: 6px 12px; font-size: 0.85rem; width: auto; }
+        
+        /* Pro Badge & Locks */
+        .pro-badge { background: var(--gold); color: black; padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; margin-left: 5px; }
+        
+        /* THE LOCK OVERLAY STYLE */
+        .locked-overlay { 
+            position: absolute; 
+            top: 0; left: 0; right: 0; bottom: 0; 
+            background: rgba(255,255,255,0.6); 
+            backdrop-filter: blur(3px); 
+            z-index: 10; 
+            display: flex; 
+            flex-direction: column;
+            align-items: center; 
+            justify-content: center; 
+            border-radius: 12px; 
+        }
+        .lock-icon { font-size: 1.8rem; margin-bottom: 5px; text-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .lock-text { font-size: 0.9rem; font-weight: 600; color: #444; }
+
+        /* Upgrade Features List */
+        .feature-list { list-style: none; padding: 0; margin: 15px 0; text-align: left; }
+        .feature-list li { margin-bottom: 10px; display: flex; align-items: center; }
+        .check-icon { color: var(--success); margin-right: 10px; font-weight: bold; }
+
+        /* Components */
+        .room-block { border-left: 4px solid var(--primary); padding-left: 15px; margin-bottom: 25px; }
+        .wall-block { background: #F9F9F9; padding: 15px; border-radius: 8px; margin-top: 10px; border: 1px solid #EEE; }
+        .deduction-row { display: flex; gap: 10px; align-items: center; margin-top: 5px; }
+        .remove-icon { color: var(--danger); font-size: 1.2rem; cursor: pointer; padding: 5px; }
+        .edit-icon { color: var(--secondary); font-size: 1.2rem; cursor: pointer; padding: 5px; }
+        .math-display { font-family: monospace; background: #FFF8E1; color: #5D4037; padding: 15px; border-radius: 8px; font-size: 0.9rem; white-space: pre-wrap; line-height: 1.4; border: 1px dashed #FFD54F; }
+        .fab { position: fixed; bottom: 20px; right: 20px; width: 56px; height: 56px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(255, 87, 34, 0.4); z-index: 100; font-size: 24px; cursor: pointer; }
+
+        /* Screens */
+        .screen { display: none; }
+        .screen.active { display: block; }
+        .invoice-preview { background: white; padding: 0; }
+        .invoice-header { display: flex; justify-content: space-between; margin-bottom: 20px; border-bottom: 2px solid var(--primary); padding-bottom: 10px; }
+        .logo-img { max-height: 80px; max-width: 150px; object-fit: contain; }
+        .qr-img { width: 160px; height: 160px; object-fit: contain; border: 1px solid #EEE; padding: 5px; background: white; }
+        @media print { .no-print, .fab, .btn, .screen:not(#screen-invoice) { display: none !important; } #screen-invoice { display: block !important; } .card { box-shadow: none; padding: 0; border: none; } }
+    </style>
+</head>
+<body>
+
+<div id="toast" style="position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #323232; color: white; padding: 12px 24px; border-radius: 24px; opacity: 0; pointer-events: none; transition: opacity 0.3s; z-index: 1000;">Saved</div>
+
+<div id="loading-overlay" style="display:none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.7); z-index: 2000; align-items: center; justify-content: center; color: white; flex-direction: column;">
+    <div style="color:white; margin-bottom:10px;">Processing...</div>
+    <div style="width: 30px; height: 30px; border: 3px solid #FFF; border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite;"></div>
+</div>
+
+<div id="upgrade-modal" style="display:none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.8); z-index: 3000; align-items: center; justify-content: center; padding: 20px;">
+    <div class="card" style="width: 100%; max-width: 400px; text-align: center;">
+        <h2 class="text-gold">👑 Upgrade to Pro</h2>
+        <p style="margin: 15px 0;">You have reached the 5 invoice limit for the Free Plan.</p>
+        <button class="btn btn-gold" onclick="showScreen('screen-upgrade'); document.getElementById('upgrade-modal').style.display='none'">Unlock Unlimited</button>
+        <button class="btn btn-secondary" style="margin-top:10px" onclick="document.getElementById('upgrade-modal').style.display='none'">Close</button>
+    </div>
+</div>
+
+<div id="screen-splash" class="screen active">
+    <div class="container" style="height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+        <h1 style="font-size: 2.5rem; color: var(--primary);">PaintFlow</h1>
+        <p>Contractor Operating System</p>
+        <div style="margin-top: 20px; width: 40px; height: 40px; border: 4px solid #EEE; border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite;"></div>
+    </div>
+</div>
+
+<div id="screen-login" class="screen">
+    <div class="container" style="padding-top: 50px;">
+        <div class="card">
+            <h2 class="text-center">Contractor Login</h2>
+            <br>
+            <div class="form-group">
+                <label>Mobile Number</label>
+                <input type="tel" id="login-phone" placeholder="Example: 9876543210" maxlength="10">
+            </div>
+            <button class="btn btn-primary" onclick="attemptLogin()">Continue</button>
+        </div>
+    </div>
+</div>
+
+<div id="screen-activation" class="screen">
+    <div class="container">
+        <div class="card" style="border: 2px solid var(--gold);">
+            <div class="text-center">
+                <h1 class="text-gold">Upgrade to PRO</h1>
+                <p class="text-sm">Remove limits. Look professional.</p>
+            </div>
+            
+            <ul class="feature-list">
+                <li><span class="check-icon">✓</span> Unlimited Invoices</li>
+                <li><span class="check-icon">✓</span> Your Logo on Invoice</li>
+                <li><span class="check-icon">✓</span> Payment QR Code</li>
+                <li><span class="check-icon">✓</span> PDF Download & Share</li>
+                <li><span class="check-icon">✓</span> GST Invoice Support</li>
+            </ul>
+
+            <div class="text-center" style="background: #FFF8E1; padding: 10px; border-radius: 8px; margin-bottom: 20px;">
+                <h3 style="margin:0">₹99 / month</h3>
+                <div class="text-sm">or enter activation code</div>
+            </div>
+
+            <div class="form-group">
+                <label>ACTIVATION CODE</label>
+                <input type="text" id="activation-code" placeholder="ENTER CODE" style="text-align: center; letter-spacing: 1px; font-weight: bold;">
+            </div>
+            
+            <button class="btn btn-gold" onclick="verifyCode()">Activate Now</button>
+            <div class="text-center text-sm" style="margin-top: 10px; color: #777;">Contact admin to buy code</div>
+            <div class="text-center text-sm" style="margin-top: 3px; font-weight: bold;">autocoresoluation8@gmail.com</div>
+            
+            <hr style="margin: 20px 0;">
+            
+            <button class="btn btn-secondary" onclick="startFreeMode()">Continue as FREE User</button>
+            <p class="text-center text-sm" style="margin-top: 5px;">(Limit: 5 Invoices, No Logo/QR)</p>
+        </div>
+    </div>
+</div>
+
+<div id="screen-upgrade" class="screen">
+    <div class="container">
+        <div class="card" style="border: 2px solid var(--gold);">
+            <div class="text-center">
+                <h1 class="text-gold">Upgrade to PRO</h1>
+                <p class="text-sm">Remove limits. Look professional.</p>
+            </div>
+            <ul class="feature-list">
+                <li><span class="check-icon">✓</span> Unlimited Invoices</li>
+                <li><span class="check-icon">✓</span> Your Logo on Invoice</li>
+                <li><span class="check-icon">✓</span> GST Invoice</li>
+            </ul>
+            <button class="btn btn-gold" onclick="buyPro()">Pay ₹99 / Month</button>
+            <hr>
+            <div class="form-group">
+                <label>Have a Code?</label>
+                <input type="text" id="upgrade-code" placeholder="ENTER CODE">
+            </div>
+            <button class="btn btn-primary" onclick="verifyUpgradeCode()">Activate</button>
+            <button class="btn btn-secondary" style="margin-top:15px" onclick="showScreen('screen-dashboard')">Back</button>
+        </div>
+    </div>
+</div>
+
+<div id="screen-dashboard" class="screen">
+    <div style="background: var(--surface); padding: 15px; box-shadow: 0 1px 4px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 50;">
+        <div class="container flex flex-between" style="padding: 0;">
+            <div>
+                <h3 style="color: var(--primary);">PaintFlow <span id="user-badge" class="pro-badge" style="display:none">PRO</span></h3>
+            </div>
+            <div class="text-right flex">
+                <button class="btn btn-sm btn-outline" style="margin-right: 10px; border-style: dashed;" onclick="resetCalculator()">+ New</button>
+                <div class="text-sm text-primary" style="font-weight: bold; cursor: pointer;" onclick="showScreen('screen-settings')">⚙</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="flex gap-10" style="margin-bottom: 20px; overflow-x: auto; padding-bottom: 5px;">
+            <button class="btn btn-sm btn-primary" onclick="setView('calculator')">Current Estimate</button>
+            <button class="btn btn-sm btn-secondary" onclick="loadHistory(); setView('history')">History</button>
+        </div>
+
+        <div id="view-calculator">
+            <div class="card">
+                <h3>👷 Client Details</h3>
+                <div class="grid-2">
+                    <div class="form-group"><label>Client Name</label><input type="text" id="client-name" placeholder="Name"></div>
+                    <div class="form-group"><label>Phone</label><input type="tel" id="client-phone" placeholder="Phone"></div>
+                </div>
+                <div class="form-group"><label>Address</label><input type="text" id="client-address" placeholder="Address"></div>
+            </div>
+
+            <div id="rooms-container"></div>
+            <button class="btn btn-outline" style="border-style: dashed; margin-bottom: 20px;" onclick="addRoom()">+ Add Room</button>
+
+            <div class="card">
+                <h3>💰 Pricing Mode</h3>
+                <div class="flex gap-10" style="margin: 15px 0;">
+                    <button class="btn btn-sm mode-btn btn-primary" id="mode-rate-btn" onclick="setMode('rate')">Per Sq.Ft</button>
+                    <button class="btn btn-sm mode-btn btn-secondary" id="mode-coverage-btn" onclick="setMode('coverage')">Material + Labour</button>
+                </div>
+                <div id="input-rate-mode">
+                    <div class="form-group"><label>Rate per Sq.Ft (₹)</label><input type="number" id="rate-sqft" placeholder="25" oninput="calculateTotal()"></div>
+                </div>
+                <div id="input-coverage-mode" style="display:none;">
+                    <div class="grid-2">
+                        <div class="form-group"><label>Coverage (sqft/L)</label><input type="number" id="paint-coverage" placeholder="120" oninput="calculateTotal()"></div>
+                        <div class="form-group"><label>Paint Price (₹/L)</label><input type="number" id="paint-price" placeholder="450" oninput="calculateTotal()"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>🛠 Labour & Extras</h3>
+                <div class="grid-2">
+                    <div class="form-group"><label>Workers</label><input type="number" id="labour-count" placeholder="2" oninput="calculateTotal()"></div>
+                    <div class="form-group"><label>Days</label><input type="number" id="labour-days" placeholder="5" oninput="calculateTotal()"></div>
+                </div>
+                <div class="form-group"><label>Daily Wage (₹)</label><input type="number" id="labour-wage" placeholder="800" oninput="calculateTotal()"></div>
+                <hr style="border:0; border-top:1px solid #EEE; margin:15px 0;">
+                <label>Extra Materials</label>
+                <div id="extras-container"></div>
+                <button class="btn btn-sm btn-outline" onclick="addExtra()">+ Add Extra Item</button>
+            </div>
+
+            <div class="card" id="gst-section" style="position: relative;">
+                <div class="flex flex-between">
+                    <div class="flex">
+                        <div style="margin-right: 15px; font-weight: 600; font-size: 1.1rem;">Tax / GST</div>
+                    </div>
+                    <div class="flex">
+                        <label class="switch">
+                            <input type="checkbox" id="gst-toggle" onchange="calculateTotal()">
+                            <span class="slider"></span>
+                        </label>
+                        <div style="margin-left: 15px; display: flex; align-items: center;">
+                            <span class="text-sm" style="margin-right: 8px;">Rate (%):</span>
+                            <input type="number" id="gst-rate" value="18" style="width: 70px; padding: 8px; text-align: center;" disabled oninput="calculateTotal()">
+                        </div>
+                    </div>
+                </div>
+                <div id="gst-lock-overlay" class="locked-overlay" style="display:none;">
+                    <div class="lock-icon">🔒</div>
+                    <div class="lock-text">Pro Feature</div>
+                </div>
+            </div>
+
+            <div class="card" style="border: 2px solid var(--primary);">
+                <h3>🧾 Summary</h3>
+                <div id="human-math" class="math-display">No rooms added.</div>
+                <div style="margin-top: 20px; font-size: 1.2rem; display: flex; justify-content: space-between; align-items: flex-end;">
+                    <div><div class="text-sm">Total Area</div><div class="text-bold" id="disp-area">0 sq.ft</div></div>
+                    <div class="text-right"><div class="text-sm">Grand Total</div><div class="text-bold text-primary" style="font-size: 1.8rem;" id="disp-total">₹0</div></div>
+                </div>
+            </div>
+            <div style="height: 60px;"></div>
+        </div>
+
+        <div id="view-history" style="display: none;">
+            <h2 style="margin-bottom: 15px;">Saved Invoices <span id="inv-count" class="text-sm text-primary"></span></h2>
+            <div id="history-list"></div>
+        </div>
+    </div>
+    <div class="fab" onclick="generateInvoice()" id="fab-save">💾</div>
+</div>
+
+<div id="screen-settings" class="screen">
+    <div class="container">
+        <div class="card">
+            <h2>⚙ Settings</h2>
+            <br>
+            <div class="form-group"><label>Contractor Name</label><input type="text" id="set-name" placeholder="Royal Paints"></div>
+            <div class="form-group"><label>Phone</label><input type="tel" id="set-phone" placeholder="9876543210"></div>
+            <div class="form-group"><label>GST Number</label><input type="text" id="set-gst" placeholder="22AAAAA0000A1Z5"></div>
+            <hr>
+            
+            <div id="pro-settings-wrapper" style="position: relative;">
+                <div class="form-group"><label>Logo Image <span class="pro-badge">PRO</span></label><input type="file" id="set-logo" accept="image/*"><div id="preview-logo" style="margin-top: 10px;"></div></div>
+                <div class="form-group"><label>Payment QR <span class="pro-badge">PRO</span></label><input type="file" id="set-qr" accept="image/*"><div id="previiew-qr" style="margin-top: 10px;"></div></div>
+                
+                <div id="settings-lock-overlay" class="locked-overlay" style="display:none;">
+                    <div class="lock-icon">🔒</div>
+                    <div class="lock-text">Upgrade to Pro to customize</div>
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <button class="btn btn-primary" onclick="saveSettings()">Save</button>
+                <button class="btn btn-secondary" onclick="showScreen('screen-dashboard')">Cancel</button>
+            </div>
+            <br>
+            <button class="btn btn-gold" onclick="showScreen('screen-upgrade')">👑 Buy Pro License</button>
+            <br><br>
+            <button class="btn btn-danger btn-sm" onclick="factoryReset()">⚠️ Factory Reset</button>
+        </div>
+    </div>
+</div>
+
+<div id="screen-invoice" class="screen">
+    <div class="container">
+        <div class="no-print" style="margin-bottom: 15px;">
+            <button class="btn btn-secondary btn-sm" onclick="showScreen('screen-dashboard')">← Edit / Back</button>
+            <div style="display: flex; gap: 10px; margin-top: 10px; flex-direction: column;">
+                <button class="btn btn-whatsapp" onclick="shareInvoiceWhatsApp()">Share Invoice (WhatsApp PDF)</button>
+                <button class="btn btn-primary" onclick="window.print()">🖨 Print / Save as PDF</button>
+            </div>
+        </div>
+        <div class="card invoice-preview" id="invoice-content"></div>
+    </div>
+</div>
+
+<script>
+// --- CORE LOGIC ---
+let appData = { rooms: [], extras: [], mode: 'rate' };
+let userPlan = 'free'; // 'free' or 'pro'
+let invCount = 0;
+
+const elm = (id) => document.getElementById(id);
+const create = (tag) => document.createElement(tag);
+const val = (id) => elm(id).value;
+const setVal = (id, v) => elm(id).value = v;
+
+document.addEventListener('DOMContentLoaded', () => {
+    try { initApp(); } catch(e) { console.error(e); }
+});
+
+function initApp() {
+    checkAuth();
+    setInterval(updateClock, 1000);
+    loadSettings();
+    if(appData.rooms.length === 0) addRoom();
+    document.addEventListener('input', (e) => {
+        if(e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') calculateTotal();
+    });
+}
+
+function updateClock() {
+    if(elm('live-clock')) {
+        const now = new Date();
+        elm('live-clock').innerText = now.toLocaleDateString() + ' ' + now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+    }
+}
+
+// --- AUTH & SUBSCRIPTION ---
+function checkAuth() {
+    let auth = localStorage.getItem('paintflow_auth');
+    if(auth === 'active') {
+        userPlan = localStorage.getItem('paintflow_plan') || 'free';
+        invCount = parseInt(localStorage.getItem('paintflow_inv_count') || '0');
+        updateUIForPlan();
+        setTimeout(() => showScreen('screen-dashboard'), 500);
+    } else {
+        setTimeout(() => showScreen('screen-login'), 500);
+    }
+}
+
+function updateUIForPlan() {
+    const badge = elm('user-badge');
+    const gstLock = elm('gst-lock-overlay');
+    const setLock = elm('settings-lock-overlay');
+    
+    if(userPlan === 'pro') {
+        badge.style.display = 'inline-block';
+        gstLock.style.display = 'none';
+        setLock.style.display = 'none';
+        
+        // Enable Inputs in Settings
+        elm('set-logo').disabled = false;
+        elm('set-qr').disabled = false;
+    } else {
+        badge.style.display = 'none';
+        gstLock.style.display = 'flex';
+        setLock.style.display = 'flex';
+        
+        // Disable Inputs & Toggles if Free
+        elm('set-logo').disabled = true;
+        elm('set-qr').disabled = true;
+        if(elm('gst-toggle')) {
+            elm('gst-toggle').checked = false;
+            calculateTotal(); // update calc to remove gst
+        }
+    }
+}
+
+function attemptLogin() {
+    const phone = val('login-phone');
+    if(phone.length < 10) return alert('Enter valid number');
+    localStorage.setItem('paintflow_user_phone', phone);
+    
+    // Check if first time
+    if (!localStorage.getItem('paintflow_plan')) {
+        showScreen('screen-activation');
+    } else {
+        checkAuth();
+    }
+}
+
+function startFreeMode() {
+    localStorage.setItem('paintflow_auth', 'active');
+    localStorage.setItem('paintflow_plan', 'free');
+    checkAuth();
+}
+
+function verifyCode() {
+    const code = val('activation-code').toUpperCase();
+    validateAndActivate(code);
+}
+
+function verifyUpgradeCode() {
+    const code = val('upgrade-code').toUpperCase();
+    validateAndActivate(code);
+}
+
+function validateAndActivate(code) {
+    // Format PF-XXXX-MMYY
+    const regex = /^PF-\d{4}-(\d{2})(\d{2})$/;
+    const match = code.match(regex);
+
+    if (match) {
+        const expMonth = parseInt(match[1]);
+        const expYear = parseInt("20" + match[2]);
+        const now = new Date();
+        const currentMonth = now.getMonth() + 1;
+        const currentYear = now.getFullYear();
+
+        if (expYear > currentYear || (expYear === currentYear && expMonth >= currentMonth)) {
+            alert("✅ Activation Successful! Welcome to PRO.");
+            localStorage.setItem('paintflow_auth', 'active');
+            localStorage.setItem('paintflow_plan', 'pro');
+            checkAuth();
+        } else {
+            alert("❌ Invalid Activation Code");
+        }
+    } else {
+        alert("❌ Invalid Activation Code");
+    }
+}
+
+function buyPro() {
+    // Placeholder for Razorpay
+    var options = {
+        "key": "YOUR_KEY_ID",
+        "amount": "9900", 
+        "currency": "INR",
+        "name": "PaintFlow Pro",
+        "description": "Subscription",
+        "handler": function (response){
+            alert("Payment Successful!");
+            localStorage.setItem('paintflow_plan', 'pro');
+            checkAuth();
+        }
+    };
+    try {
+        var rzp1 = new Razorpay(options);
+        rzp1.open();
+    } catch(e) {
+        // Fallback for demo
+        if(confirm("Payment Gateway Demo: Activate PRO?")) {
+            localStorage.setItem('paintflow_plan', 'pro');
+            checkAuth();
+        }
+    }
+}
+
+// --- NAV ---
+function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    if(elm(id)) elm(id).classList.add('active');
+    window.scrollTo(0,0);
+}
+
+function setView(viewName) {
+    elm('view-calculator').style.display = viewName === 'calculator' ? 'block' : 'none';
+    elm('view-history').style.display = viewName === 'history' ? 'block' : 'none';
+    elm('fab-save').style.display = viewName === 'calculator' ? 'flex' : 'none';
+}
+
+function resetCalculator() {
+    if(!confirm("Start new estimate?")) return;
+    appData.rooms = []; appData.extras = [];
+    elm('rooms-container').innerHTML = '';
+    elm('extras-container').innerHTML = '';
+    elm('human-math').innerText = '';
+    ['client-name','client-phone','client-address','rate-sqft','labour-count','labour-days','labour-wage'].forEach(id => {
+        if(elm(id)) elm(id).value = '';
+    });
+    if(elm('gst-toggle')) {
+        elm('gst-toggle').checked = false;
+        elm('gst-rate').disabled = true;
+        elm('gst-rate').value = '18';
+    }
+    addRoom(); calculateTotal();
+}
+
+// --- ROOMS ---
+function addRoom() {
+    const id = Date.now();
+    appData.rooms.push({ id: id, walls: [] });
+    renderRooms(); addWall(id);
+}
+
+function removeRoom(rid) {
+    if(!confirm('Delete room?')) return;
+    saveInputStates();
+    appData.rooms = appData.rooms.filter(r => r.id !== rid);
+    elm('rooms-container').innerHTML = '';
+    renderRooms(); calculateTotal();
+}
+
+function addWall(rid) {
+    appData.rooms.find(r => r.id === rid).walls.push({ id: Date.now(), deductions: [] });
+    renderRooms();
+}
+
+function removeWall(rid, wid) {
+    saveInputStates();
+    const r = appData.rooms.find(x => x.id === rid);
+    r.walls = r.walls.filter(w => w.id !== wid);
+    elm('rooms-container').innerHTML = '';
+    renderRooms(); calculateTotal();
+}
+
+function addDeduction(rid, wid) {
+    appData.rooms.find(r => r.id === rid).walls.find(w => w.id === wid).deductions.push({ id: Date.now() });
+    renderRooms();
+}
+
+function removeDeduction(rid, wid, did) {
+    saveInputStates();
+    const w = appData.rooms.find(r => r.id === rid).walls.find(x => x.id === wid);
+    w.deductions = w.deductions.filter(d => d.id !== did);
+    elm('rooms-container').innerHTML = '';
+    renderRooms(); calculateTotal();
+}
+
+function renderRooms() {
+    saveInputStates();
+    const c = elm('rooms-container');
+    c.innerHTML = '';
+    appData.rooms.forEach((r, rIdx) => {
+        const d = create('div'); d.className = 'card room-block';
+        d.innerHTML = `
+            <div class="flex flex-between">
+                <div class="form-group" style="width:70%; margin:0;"><input type="text" class="room-name-input" data-rid="${r.id}" placeholder="Room Name" value="${r.name || 'Room '+(rIdx+1)}"></div>
+                <button class="btn btn-sm btn-danger" onclick="removeRoom(${r.id})">🗑</button>
+            </div>
+            <div class="walls-container" id="w-con-${r.id}"></div>
+            <button class="btn btn-sm btn-secondary" style="margin-top:10px" onclick="addWall(${r.id})">+ Wall</button>
+        `;
+        c.appendChild(d);
+        const wCon = d.querySelector('.walls-container');
+        r.walls.forEach((w, wIdx) => {
+            const wd = create('div'); wd.className = 'wall-block';
+            wd.innerHTML = `
+                <div class="flex flex-between" style="margin-bottom:10px;">
+                    <span class="text-bold">Wall ${wIdx+1}</span>
+                    <div class="flex">
+                        <label class="switch" style="transform:scale(0.8); margin-right:5px;">
+                            <input type="checkbox" class="dc-toggle" data-rid="${r.id}" data-wid="${w.id}" ${w.doubleCoat?'checked':''}>
+                            <span class="slider"></span>
+                        </label>
+                        <span class="text-sm" style="margin-right:10px;">2x</span>
+                        <span class="remove-icon" onclick="removeWall(${r.id}, ${w.id})">✖</span>
+                    </div>
+                </div>
+                <div class="grid-2">
+                    <input type="number" class="w-h" data-rid="${r.id}" data-wid="${w.id}" placeholder="H (10)" value="${w.h||''}">
+                    <input type="number" class="w-l" data-rid="${r.id}" data-wid="${w.id}" placeholder="L (12)" value="${w.l||''}">
+                </div>
+                <div id="deds-${w.id}" style="margin-top:5px;"></div>
+                <div class="text-right"><button class="btn btn-sm btn-outline" style="font-size:0.7rem; padding:4px 8px; border:none;" onclick="addDeduction(${r.id}, ${w.id})">+ Door/Window</button></div>
+            `;
+            wCon.appendChild(wd);
+            const dedCon = wd.querySelector(`#deds-${w.id}`);
+            w.deductions.forEach(ded => {
+                const dr = create('div'); dr.className = 'deduction-row';
+                dr.innerHTML = `
+                    <span class="text-sm">Ded:</span>
+                    <input type="number" class="d-h" data-rid="${r.id}" data-wid="${w.id}" data-did="${ded.id}" placeholder="H" value="${ded.h||''}">
+                    <span class="text-sm">x</span>
+                    <input type="number" class="d-w" data-rid="${r.id}" data-wid="${w.id}" data-did="${ded.id}" placeholder="W" value="${ded.w||''}">
+                    <span class="remove-icon" onclick="removeDeduction(${r.id}, ${w.id}, ${ded.id})">✖</span>
+                `;
+                dedCon.appendChild(dr);
+            });
+        });
+    });
+}
+
+function saveInputStates() {
+    document.querySelectorAll('.room-name-input').forEach(i => { const r = appData.rooms.find(x=>x.id==i.dataset.rid); if(r) r.name = i.value; });
+    document.querySelectorAll('.w-h').forEach(i => { const w = appData.rooms.find(x=>x.id==i.dataset.rid).walls.find(y=>y.id==i.dataset.wid); if(w) w.h = parseFloat(i.value); });
+    document.querySelectorAll('.w-l').forEach(i => { const w = appData.rooms.find(x=>x.id==i.dataset.rid).walls.find(y=>y.id==i.dataset.wid); if(w) w.l = parseFloat(i.value); });
+    document.querySelectorAll('.dc-toggle').forEach(i => { const w = appData.rooms.find(x=>x.id==i.dataset.rid).walls.find(y=>y.id==i.dataset.wid); if(w) w.doubleCoat = i.checked; });
+    document.querySelectorAll('.d-h').forEach(i => { const d = appData.rooms.find(x=>x.id==i.dataset.rid).walls.find(y=>y.id==i.dataset.wid).deductions.find(z=>z.id==i.dataset.did); if(d) d.h = parseFloat(i.value); });
+    document.querySelectorAll('.d-w').forEach(i => { const d = appData.rooms.find(x=>x.id==i.dataset.rid).walls.find(y=>y.id==i.dataset.wid).deductions.find(z=>z.id==i.dataset.did); if(d) d.w = parseFloat(i.value); });
+}
+
+function addExtra() { appData.extras.push({ id: Date.now(), name:'', cost:'' }); renderExtras(); }
+function renderExtras() {
+    const c = elm('extras-container'); c.innerHTML = '';
+    appData.extras.forEach((e, idx) => {
+        const d = create('div'); d.className = 'grid-2'; d.style.marginBottom='5px';
+        d.innerHTML = `
+            <input type="text" placeholder="Item" value="${e.name}" oninput="appData.extras[${idx}].name=this.value">
+            <div class="flex">
+                <input type="number" placeholder="Cost" value="${e.cost}" oninput="appData.extras[${idx}].cost=this.value; calculateTotal()">
+                <span class="remove-icon" onclick="appData.extras.splice(${idx},1); renderExtras(); calculateTotal()">✖</span>
+            </div>`;
+        c.appendChild(d);
+    });
+}
+
+function setMode(m) {
+    appData.mode = m;
+    elm('mode-rate-btn').className = `btn btn-sm mode-btn ${m==='rate'?'btn-primary':'btn-secondary'}`;
+    elm('mode-coverage-btn').className = `btn btn-sm mode-btn ${m==='coverage'?'btn-primary':'btn-secondary'}`;
+    elm('input-rate-mode').style.display = m==='rate' ? 'block' : 'none';
+    elm('input-coverage-mode').style.display = m==='coverage' ? 'block' : 'none';
+    calculateTotal();
+}
+
+function calculateTotal() {
+    saveInputStates();
+    let area = 0, math = '';
+    appData.rooms.forEach(r => {
+        let ra = 0;
+        math += `<b>${r.name||'Room'}:</b>\n`;
+        r.walls.forEach((w, i) => {
+            const gross = (w.h||0)*(w.l||0);
+            let ded = 0;
+            w.deductions.forEach(d => ded += (d.h||0)*(d.w||0));
+            let net = gross - ded; if(net<0) net=0;
+            if(w.doubleCoat) net *= 2;
+            math += `  W${i+1}: ${w.h}x${w.l}=${gross} - Ded:${ded} = ${net} ${w.doubleCoat?'(2x)':''}\n`;
+            ra += net;
+        });
+        area += ra;
+        math += `  Sub: ${ra} sq.ft\n`;
+    });
+    elm('human-math').innerHTML = math || 'Start adding...';
+    elm('disp-area').innerText = area + ' sq.ft';
+
+    let paintCost = 0, calcTxt = '';
+    if(appData.mode === 'rate') {
+        const rate = parseFloat(val('rate-sqft'))||0;
+        paintCost = area * rate;
+        calcTxt = `Paint (${area} sq.ft x ₹${rate})`;
+    } else {
+        const cov = parseFloat(val('paint-coverage'))||1, pr = parseFloat(val('paint-price'))||0;
+        const l = Math.ceil(area/cov);
+        paintCost = l * pr;
+        calcTxt = `Paint (${l}L x ₹${pr})`;
+    }
+
+    const labCost = (parseFloat(val('labour-count'))||0) * (parseFloat(val('labour-days'))||0) * (parseFloat(val('labour-wage'))||0);
+    let exCost = 0; appData.extras.forEach(e => exCost += (parseFloat(e.cost)||0));
+    
+    let sub = paintCost + labCost + exCost;
+    
+    let gstAmt = 0, gstRate = 0, gstOn = false;
+    
+    // Only allow GST if Pro
+    if(userPlan === 'pro') {
+        gstOn = elm('gst-toggle').checked;
+        const gstInput = elm('gst-rate');
+        gstInput.disabled = !gstOn;
+        if(gstOn) {
+            gstRate = parseFloat(gstInput.value)||0;
+            gstAmt = sub * gstRate / 100;
+        }
+    } else {
+        if(elm('gst-toggle').checked) elm('gst-toggle').checked = false;
+    }
+    
+    const total = sub + gstAmt;
+    elm('disp-total').innerText = '₹' + total.toFixed(2);
+    
+    appData.breakdown = { area, paintCost, labCost, exCost, sub, gstAmt, total, gstOn, gstRate, calcTxt, 
+        w: val('labour-count'), d: val('labour-days'), wg: val('labour-wage') };
+}
+
+function generateInvoice() {
+    if(userPlan === 'free' && invCount >= 5) {
+        document.getElementById('upgrade-modal').style.display = 'flex';
+        return;
+    }
+
+    calculateTotal();
+    const rec = {
+        id: Date.now(),
+        client: { name: val('client-name'), phone: val('client-phone'), addr: val('client-address') },
+        date: new Date().toLocaleDateString(),
+        invNo: 'INV-'+Date.now().toString().slice(-6),
+        data: appData.breakdown,
+        extras: appData.extras,
+        rooms: JSON.parse(JSON.stringify(appData.rooms)),
+        mode: appData.mode,
+        inputs: {
+            rateSqft: val('rate-sqft'),
+            coverage: val('paint-coverage'),
+            price: val('paint-price'),
+            labourCount: val('labour-count'),
+            labourDays: val('labour-days'),
+            labourWage: val('labour-wage'),
+            gstRate: val('gst-rate')
+        },
+        settings: JSON.parse(localStorage.getItem('paintflow_settings')) || {},
+        math: elm('human-math').innerHTML
+    };
+    
+    let h = JSON.parse(localStorage.getItem('paintflow_history')||'[]');
+    h.unshift(rec);
+    localStorage.setItem('paintflow_history', JSON.stringify(h));
+    
+    invCount++;
+    localStorage.setItem('paintflow_inv_count', invCount);
+
+    renderInvoiceHTML(rec);
+    showScreen('screen-invoice');
+}
+
+function renderInvoiceHTML(rec) {
+    const s = rec.settings; const d = rec.data;
+    let rows = `
+        <tr><td style="padding:8px;border-bottom:1pxsolid #ddd"><strong>Painting</strong><br><span class="text-sm">${d.calcTxt}</span></td><td class="text-right" style="padding:8px;border-bottom:1px solid #ddd">₹${d.paintCost.toFixed(2)}</td></tr>
+        ${d.labCost?`<tr><td style="padding:8px;border-bottom:1px solid #ddd"><strong>Labour</strong><br><span class="text-sm">${d.w} Workers, ${d.d} Days @ ₹${d.wg}</span></td><td class="text-right" style="padding:8px;border-bottom:1px solid #ddd">₹${d.labCost.toFixed(2)}</td></tr>`:''}
+    `;
+    rec.extras.forEach(e => rows += `<tr><td style="padding:8px;border-bottom:1px solid #ddd">${e.name}</td><td class="text-right" style="padding:8px;border-bottom:1px solid #ddd">₹${parseFloat(e.cost).toFixed(2)}</td></tr>`);
+    
+    let logo = `<h2>${s.name||'Contractor'}</h2>`;
+    let qr = '';
+    
+    if(userPlan === 'pro') {
+        logo = s.logo ? s.logo : logo;
+        qr = s.qr ? `<div class="text-center"><div class="text-sm">Scan to Pay</div>${s.qr}</div>` : '';
+    } else {
+        qr = '<div class="text-sm" style="color:#AAA;">Upgrade to add QR</div>';
+    }
+
+    elm('invoice-content').innerHTML = `
+        <div style="padding:30px;">
+            <div class="invoice-header"><div>${logo}</div><div class="text-right"><h2>INVOICE</h2><div class="text-sm">#${rec.invNo}</div><div class="text-sm">${rec.date}</div></div></div>
+            <div class="flex flex-between" style="margin-bottom:30px;">
+                <div><div class="text-bold">FROM:</div><div>${s.name||''}</div><div class="text-sm">${s.phone||''}</div><div class="text-sm">${(userPlan==='pro' && s.gst)?'GST: '+s.gst:''}</div></div>
+                <div class="text-right"><div class="text-bold">BILL TO:</div><div>${rec.client.name||''}</div><div class="text-sm">${rec.client.phone||''}</div><div class="text-sm">${rec.client.addr||''}</div></div>
+            </div>
+            <table style="width:100%; border-collapse:collapse; margin-bottom:20px;">
+                <thead><tr style="background:#F5F5F5"><th class="text-left" style="padding:10px">Description</th><th class="text-right" style="padding:10px">Amount</th></tr></thead>
+                <tbody>${rows}</tbody>
+            </table>
+            <div class="flex flex-between" style="align-items:flex-start">
+                <div style="width:40%">${qr}</div>
+                <div style="width:50%">
+                    <div class="flex flex-between" style="padding:5px 0"><span>Subtotal:</span><span>₹${d.sub.toFixed(2)}</span></div>
+                    ${d.gstOn ? `<div class="flex flex-between" style="padding:5px 0"><span>GST @ ${d.gstRate}%:</span><span>₹${d.gstAmt.toFixed(2)}</span></div>` : ''}
+                    <div class="flex flex-between" style="padding:10px 0; border-top:2px solid #333; font-weight:bold; font-size:1.2rem"><span>Total:</span><span>₹${d.total.toFixed(2)}</span></div>
+                </div>
+            </div>
+            <div style="margin-top:40px; border-top:1px dashed #ccc; padding-top:20px;"><h4>Measurement Sheet</h4><div style="font-family:monospace; font-size:0.8rem; white-space:pre-wrap; color:#555">${rec.math}</div></div>
+            
+            <div style="margin-top:30px; text-align:center; font-size:0.8rem; color:#777; border-top:1px solid #eee; padding-top:10px;">
+                <div>Paint Flow by Autocore Soluation</div>
+                <div>autocoresoluation8@gmail.com</div>
+            </div>
+        </div>`;
+}
+
+function shareInvoiceWhatsApp() {
+    if(userPlan === 'free') return document.getElementById('upgrade-modal').style.display='flex';
+    if(!navigator.share || typeof html2pdf === 'undefined') return alert('Sharing not supported/ready.');
+    elm('loading-overlay').style.display = 'flex';
+    const opt = { margin: 0, filename: 'Invoice.pdf', image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' } };
+    html2pdf().set(opt).from(elm('invoice-content')).outputPdf('blob').then(blob => {
+        navigator.share({ files: [new File([blob], "Invoice.pdf", { type: "application/pdf" })], title: 'Invoice' })
+        .then(() => elm('loading-overlay').style.display = 'none')
+        .catch(e => { elm('loading-overlay').style.display = 'none'; });
+    });
+}
+
+function saveSettings() {
+    const s = { name: val('set-name'), phone: val('set-phone'), gst: val('set-gst'), logo: elm('preview-logo').innerHTML, qr: elm('preview-qr').innerHTML };
+    localStorage.setItem('paintflow_settings', JSON.stringify(s));
+    showToast(); showScreen('screen-dashboard');
+}
+function loadSettings() {
+    const s = JSON.parse(localStorage.getItem('paintflow_settings'));
+    if(s) { setVal('set-name', s.name); setVal('set-phone', s.phone); setVal('set-gst', s.gst); if(s.logo) elm('preview-logo').innerHTML = s.logo; if(s.qr) elm('preview-qr').innerHTML = s.qr; }
+}
+
+function loadHistory() {
+    const l = elm('history-list'); l.innerHTML = '';
+    let h = [];
+    try { h = JSON.parse(localStorage.getItem('paintflow_history')||'[]'); } catch(e){}
+    
+    if(elm('inv-count')) elm('inv-count').innerText = `(${h.length}/${userPlan==='free'?'5':'∞'})`;
+
+    if(h.length===0) l.innerHTML='<div class="text-center" style="padding:20px">No invoices</div>';
+    
+    h.forEach((r,i) => {
+        let amt = 0;
+        if(r.data && r.data.total) amt = r.data.total;
+        else if(r.amount) amt = parseFloat(r.amount);
+
+        const d = create('div'); d.className = 'card'; d.style.padding='15px';
+        d.innerHTML = `
+            <div class="flex flex-between">
+                <div onclick="openHistory(${i})" style="flex-grow:1; cursor:pointer;">
+                    <strong>${(r.client && r.client.name) ? r.client.name : 'Client'}</strong>
+                    <div class="text-sm">${r.date}</div>
+                </div>
+                <div class="flex">
+                    <div class="text-primary text-bold" style="margin-right:15px;">₹${amt.toFixed(0)}</div>
+                    <span class="edit-icon" onclick="event.stopPropagation(); editInvoice(${i})" style="margin-right:10px;">✎</span>
+                    <span class="remove-icon" onclick="event.stopPropagation(); deleteInvoice(${i})" style="font-size:1.2rem;">🗑</span>
+                </div>
+            </div>`;
+        l.appendChild(d);
+    });
+}
+
+function deleteInvoice(idx) {
+    if(!confirm("Permanently delete this invoice?")) return;
+    let h = JSON.parse(localStorage.getItem('paintflow_history')||'[]');
+    h.splice(idx, 1);
+    localStorage.setItem('paintflow_history', JSON.stringify(h));
+    loadHistory();
+}
+
+function editInvoice(i) {
+    let h = JSON.parse(localStorage.getItem('paintflow_history') || '[]');
+    let rec = h[i];
+    if(!rec.rooms) { alert("Old invoice format. Cannot edit."); return; }
+    if(!confirm("Edit this invoice? Unsaved data will be lost.")) return;
+
+    appData.rooms = rec.rooms;
+    appData.extras = rec.extras || [];
+    appData.mode = rec.mode || 'rate';
+
+    setVal('client-name', rec.client.name);
+    setVal('client-phone', rec.client.phone);
+    setVal('client-address', rec.client.addr);
+    
+    if(rec.inputs) {
+        setVal('rate-sqft', rec.inputs.rateSqft);
+        setVal('paint-coverage', rec.inputs.coverage);
+        setVal('paint-price', rec.inputs.price);
+        setVal('labour-count', rec.inputs.labourCount);
+        setVal('labour-days', rec.inputs.labourDays);
+        setVal('labour-wage', rec.inputs.labourWage);
+        setVal('gst-rate', rec.inputs.gstRate);
+    }
+    if(rec.data && elm('gst-toggle')) elm('gst-toggle').checked = rec.data.gstOn;
+
+    setMode(appData.mode);
+    renderRooms(); renderExtras(); calculateTotal();
+    setView('calculator');
+}
+
+function openHistory(i) { 
+    try {
+        const h = JSON.parse(localStorage.getItem('paintflow_history'));
+        if(h && h[i]) { renderInvoiceHTML(h[i]); showScreen('screen-invoice'); }
+    } catch(e) { alert("Error opening invoice"); }
+}
+
+function showToast() { const t = elm('toast'); t.style.opacity=1; setTimeout(()=>t.style.opacity=0, 2000); }
+function factoryReset() { if(confirm('Reset App?')) { localStorage.clear(); location.reload(); } }
+
+['set-logo','set-qr'].forEach(id => {
+    elm(id).addEventListener('change', e => {
+        const r = new FileReader(); r.onload = ev => elm(id==='set-logo'?'preview-logo':'preview-qr').innerHTML = `<img src="${ev.target.result}" class="${id==='set-logo'?'logo-img':'qr-img'}">`;
+        r.readAsDataURL(e.target.files[0]);
+    });
+});
+</script>
+</body>
+</html>
