@@ -128,7 +128,7 @@
 <div id="upgrade-modal" style="display:none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.8); z-index: 3000; align-items: center; justify-content: center; padding: 20px;">
     <div class="card" style="width: 100%; max-width: 400px; text-align: center;">
         <h2 class="text-gold">👑 Upgrade to Pro</h2>
-        <p style="margin: 15px 0;">You have reached the 5 invoice limit for the Free Plan.</p>
+        <p style="margin: 15px 0;">You have reached the limit for the Free Plan.</p>
         <button class="btn btn-gold" onclick="showScreen('screen-upgrade'); document.getElementById('upgrade-modal').style.display='none'">Unlock Unlimited</button>
         <button class="btn btn-secondary" style="margin-top:10px" onclick="document.getElementById('upgrade-modal').style.display='none'">Close</button>
     </div>
@@ -189,7 +189,7 @@
             <hr style="margin: 20px 0;">
             
             <button class="btn btn-secondary" onclick="startFreeMode()">Continue as FREE User</button>
-            <p class="text-center text-sm" style="margin-top: 5px;">(Limit: 5 Invoices, No Logo/QR)</p>
+            <p class="text-center text-sm" style="margin-top: 5px;">(Limit: 3 Invoices, 2 Rooms, No Logo/QR)</p>
         </div>
     </div>
 </div>
@@ -203,6 +203,7 @@
             </div>
             <ul class="feature-list">
                 <li><span class="check-icon">✓</span> Unlimited Invoices</li>
+                <li><span class="check-icon">✓</span> Unlimited Rooms</li>
                 <li><span class="check-icon">✓</span> Your Logo on Invoice</li>
                 <li><span class="check-icon">✓</span> GST Invoice</li>
             </ul>
@@ -275,7 +276,7 @@
                 </div>
                 <div class="form-group"><label>Daily Wage (₹)</label><input type="number" id="labour-wage" placeholder="800" oninput="calculateTotal()"></div>
                 <hr style="border:0; border-top:1px solid #EEE; margin:15px 0;">
-                <label>Extra Materials</label>
+                <label>Extra Materials <span id="extra-pro-badge" class="pro-badge" style="display:none; background:#EEE; color:#888;">PRO</span></label>
                 <div id="extras-container"></div>
                 <button class="btn btn-sm btn-outline" onclick="addExtra()">+ Add Extra Item</button>
             </div>
@@ -333,7 +334,7 @@
             
             <div id="pro-settings-wrapper" style="position: relative;">
                 <div class="form-group"><label>Logo Image <span class="pro-badge">PRO</span></label><input type="file" id="set-logo" accept="image/*"><div id="preview-logo" style="margin-top: 10px;"></div></div>
-                <div class="form-group"><label>Payment QR <span class="pro-badge">PRO</span></label><input type="file" id="set-qr" accept="image/*"><div id="previiew-qr" style="margin-top: 10px;"></div></div>
+                <div class="form-group"><label>Payment QR <span class="pro-badge">PRO</span></label><input type="file" id="set-qr" accept="image/*"><div id="preview-qr" style="margin-top: 10px;"></div></div>
                 
                 <div id="settings-lock-overlay" class="locked-overlay" style="display:none;">
                     <div class="lock-icon">🔒</div>
@@ -415,11 +416,13 @@ function updateUIForPlan() {
     const badge = elm('user-badge');
     const gstLock = elm('gst-lock-overlay');
     const setLock = elm('settings-lock-overlay');
+    const exBadge = elm('extra-pro-badge');
     
     if(userPlan === 'pro') {
         badge.style.display = 'inline-block';
         gstLock.style.display = 'none';
         setLock.style.display = 'none';
+        if(exBadge) exBadge.style.display = 'none';
         
         // Enable Inputs in Settings
         elm('set-logo').disabled = false;
@@ -428,13 +431,14 @@ function updateUIForPlan() {
         badge.style.display = 'none';
         gstLock.style.display = 'flex';
         setLock.style.display = 'flex';
+        if(exBadge) exBadge.style.display = 'inline-block';
         
         // Disable Inputs & Toggles if Free
         elm('set-logo').disabled = true;
         elm('set-qr').disabled = true;
         if(elm('gst-toggle')) {
             elm('gst-toggle').checked = false;
-            calculateTotal(); // update calc to remove gst
+            calculateTotal(); 
         }
     }
 }
@@ -469,7 +473,6 @@ function verifyUpgradeCode() {
 }
 
 function validateAndActivate(code) {
-    // Format PF-XXXX-MMYY
     const regex = /^PF-\d{4}-(\d{2})(\d{2})$/;
     const match = code.match(regex);
 
@@ -494,7 +497,6 @@ function validateAndActivate(code) {
 }
 
 function buyPro() {
-    // Placeholder for Razorpay
     var options = {
         "key": "YOUR_KEY_ID",
         "amount": "9900", 
@@ -511,7 +513,6 @@ function buyPro() {
         var rzp1 = new Razorpay(options);
         rzp1.open();
     } catch(e) {
-        // Fallback for demo
         if(confirm("Payment Gateway Demo: Activate PRO?")) {
             localStorage.setItem('paintflow_plan', 'pro');
             checkAuth();
@@ -538,7 +539,7 @@ function resetCalculator() {
     elm('rooms-container').innerHTML = '';
     elm('extras-container').innerHTML = '';
     elm('human-math').innerText = '';
-    ['client-name','client-phone','client-address','rate-sqft','labour-count','labour-days','labour-wage'].forEach(id => {
+    ['client-name','client-phone','client-address','rate-sqft','paint-coverage','paint-price','labour-count','labour-days','labour-wage'].forEach(id => {
         if(elm(id)) elm(id).value = '';
     });
     if(elm('gst-toggle')) {
@@ -551,6 +552,15 @@ function resetCalculator() {
 
 // --- ROOMS ---
 function addRoom() {
+    // BUG FIX: Ensure correct plan status is read before check
+    const currentPlan = localStorage.getItem('paintflow_plan') || 'free';
+    
+    // ROOM LIMIT FOR FREE USERS (PRO USERS BYPASS)
+    if(currentPlan === 'free' && appData.rooms.length >= 2) {
+        document.getElementById('upgrade-modal').style.display = 'flex';
+        return;
+    }
+
     const id = Date.now();
     appData.rooms.push({ id: id, walls: [] });
     renderRooms(); addWall(id);
@@ -653,7 +663,19 @@ function saveInputStates() {
     document.querySelectorAll('.d-w').forEach(i => { const d = appData.rooms.find(x=>x.id==i.dataset.rid).walls.find(y=>y.id==i.dataset.wid).deductions.find(z=>z.id==i.dataset.did); if(d) d.w = parseFloat(i.value); });
 }
 
-function addExtra() { appData.extras.push({ id: Date.now(), name:'', cost:'' }); renderExtras(); }
+function addExtra() { 
+    // BUG FIX: Ensure correct plan status is read before check
+    const currentPlan = localStorage.getItem('paintflow_plan') || 'free';
+
+    // EXTRA ITEM LIMIT FOR FREE USERS (PRO USERS BYPASS)
+    if(currentPlan === 'free') {
+        document.getElementById('upgrade-modal').style.display = 'flex';
+        return;
+    }
+    appData.extras.push({ id: Date.now(), name:'', cost:'' }); 
+    renderExtras(); 
+}
+
 function renderExtras() {
     const c = elm('extras-container'); c.innerHTML = '';
     appData.extras.forEach((e, idx) => {
@@ -738,7 +760,11 @@ function calculateTotal() {
 }
 
 function generateInvoice() {
-    if(userPlan === 'free' && invCount >= 5) {
+    // BUG FIX: Force refresh plan status from storage to ensure PRO works instantly
+    const currentPlan = localStorage.getItem('paintflow_plan') || 'free';
+    
+    // 3 INVOICE LIMIT FOR FREE USERS (PRO Bypasses)
+    if(currentPlan === 'free' && invCount >= 3) {
         document.getElementById('upgrade-modal').style.display = 'flex';
         return;
     }
@@ -780,7 +806,7 @@ function generateInvoice() {
 function renderInvoiceHTML(rec) {
     const s = rec.settings; const d = rec.data;
     let rows = `
-        <tr><td style="padding:8px;border-bottom:1pxsolid #ddd"><strong>Painting</strong><br><span class="text-sm">${d.calcTxt}</span></td><td class="text-right" style="padding:8px;border-bottom:1px solid #ddd">₹${d.paintCost.toFixed(2)}</td></tr>
+        <tr><td style="padding:8px;border-bottom:1px solid #ddd"><strong>Painting</strong><br><span class="text-sm">${d.calcTxt}</span></td><td class="text-right" style="padding:8px;border-bottom:1px solid #ddd">₹${d.paintCost.toFixed(2)}</td></tr>
         ${d.labCost?`<tr><td style="padding:8px;border-bottom:1px solid #ddd"><strong>Labour</strong><br><span class="text-sm">${d.w} Workers, ${d.d} Days @ ₹${d.wg}</span></td><td class="text-right" style="padding:8px;border-bottom:1px solid #ddd">₹${d.labCost.toFixed(2)}</td></tr>`:''}
     `;
     rec.extras.forEach(e => rows += `<tr><td style="padding:8px;border-bottom:1px solid #ddd">${e.name}</td><td class="text-right" style="padding:8px;border-bottom:1px solid #ddd">₹${parseFloat(e.cost).toFixed(2)}</td></tr>`);
@@ -850,7 +876,7 @@ function loadHistory() {
     let h = [];
     try { h = JSON.parse(localStorage.getItem('paintflow_history')||'[]'); } catch(e){}
     
-    if(elm('inv-count')) elm('inv-count').innerText = `(${h.length}/${userPlan==='free'?'5':'∞'})`;
+    if(elm('inv-count')) elm('inv-count').innerText = `(${h.length}/${userPlan==='free'?'3':'∞'})`;
 
     if(h.length===0) l.innerHTML='<div class="text-center" style="padding:20px">No invoices</div>';
     
@@ -933,3 +959,4 @@ function factoryReset() { if(confirm('Reset App?')) { localStorage.clear(); loca
 </script>
 </body>
 </html>
+                                                                                                                                                
