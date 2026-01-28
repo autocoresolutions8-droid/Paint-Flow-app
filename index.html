@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#FF5722">
     <title>PaintFlow - Contractor Pro</title>
     
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" async></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
     <style>
@@ -334,7 +334,6 @@
             
             <div id="pro-settings-wrapper" style="position: relative;">
                 <div class="form-group"><label>Logo Image <span class="pro-badge">PRO</span></label><input type="file" id="set-logo" accept="image/*"><div id="preview-logo" style="margin-top: 10px;"></div></div>
-                <div class="form-group"><label>Payment QR <span class="pro-badge">PRO</span></label><input type="file" id="set-qr" accept="image/*"><div id="preview-qr" style="margin-top: 10px;"></div></div>
                 
                 <div id="settings-lock-overlay" class="locked-overlay" style="display:none;">
                     <div class="lock-icon">🔒</div>
@@ -732,8 +731,7 @@ function calculateTotal() {
         calcTxt = `Paint (${l}L x ₹${pr})`;
     }
 
-    const labCost =
-        (parseFloat(val('labour-count'))||0) * (parseFloat(val('labour-days'))||0) * (parseFloat(val('labour-wage'))||0);
+    const labCost = (parseFloat(val('labour-count'))||0) * (parseFloat(val('labour-days'))||0) * (parseFloat(val('labour-wage'))||0);
     let exCost = 0; appData.extras.forEach(e => exCost += (parseFloat(e.cost)||0));
     
     let sub = paintCost + labCost + exCost;
@@ -898,7 +896,7 @@ async function shareInvoiceWhatsApp() {
                     });
                  } else {
                      // Fallback if bridge not ready: Download
-                     saveAs(pdfBlob, 'PaintFlow_Invoice.pdf'); 
+                     downloadPDF(); 
                  }
             } else {
                 // 4. BROWSER FALLBACK
