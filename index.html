@@ -360,7 +360,7 @@
             <button class="btn btn-secondary btn-sm" onclick="showScreen('screen-dashboard')">← Edit / Back</button>
             <div style="display: flex; gap: 10px; margin-top: 10px; flex-direction: column;">
                 <button class="btn btn-whatsapp" onclick="shareInvoiceWhatsApp()">Share Invoice (WhatsApp PDF)</button>
-                <button class="btn btn-primary" onclick="window.print()">🖨 Print / Save as PDF</button>
+                <button class="btn btn-primary" onclick="downloadPDF()">🖨 Print / Save as PDF</button>
             </div>
         </div>
         <div class="card invoice-preview" id="invoice-content"></div>
@@ -552,10 +552,10 @@ function resetCalculator() {
 
 // --- ROOMS ---
 function addRoom() {
-    // BUG FIX: Ensure correct plan status is read before check
+    // BUG FIX: Force refresh plan status
     const currentPlan = localStorage.getItem('paintflow_plan') || 'free';
     
-    // ROOM LIMIT FOR FREE USERS (PRO USERS BYPASS)
+    // ROOM LIMIT FOR FREE USERS
     if(currentPlan === 'free' && appData.rooms.length >= 2) {
         document.getElementById('upgrade-modal').style.display = 'flex';
         return;
@@ -664,10 +664,10 @@ function saveInputStates() {
 }
 
 function addExtra() { 
-    // BUG FIX: Ensure correct plan status is read before check
+    // BUG FIX: Force refresh plan status
     const currentPlan = localStorage.getItem('paintflow_plan') || 'free';
 
-    // EXTRA ITEM LIMIT FOR FREE USERS (PRO USERS BYPASS)
+    // EXTRA ITEM LIMIT FOR FREE USERS
     if(currentPlan === 'free') {
         document.getElementById('upgrade-modal').style.display = 'flex';
         return;
@@ -760,7 +760,7 @@ function calculateTotal() {
 }
 
 function generateInvoice() {
-    // BUG FIX: Force refresh plan status from storage to ensure PRO works instantly
+    // BUG FIX: Force refresh plan status
     const currentPlan = localStorage.getItem('paintflow_plan') || 'free';
     
     // 3 INVOICE LIMIT FOR FREE USERS (PRO Bypasses)
@@ -849,15 +849,61 @@ function renderInvoiceHTML(rec) {
         </div>`;
 }
 
+// FIXED: PDF Download for APK
+function downloadPDF() {
+    const element = document.getElementById('invoice-content');
+    const opt = {
+        margin: 0,
+        filename: 'PaintFlow_Invoice.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+    };
+    html2pdf().set(opt).from(element).save();
+}
+
+// FIXED: WhatsApp Share for APK
 function shareInvoiceWhatsApp() {
     if(userPlan === 'free') return document.getElementById('upgrade-modal').style.display='flex';
-    if(!navigator.share || typeof html2pdf === 'undefined') return alert('Sharing not supported/ready.');
+    
+    // Check for share API
+    if(!navigator.canShare) {
+        // Fallback for older WebViews: Direct Download
+        alert("Sharing not supported directly. Downloading PDF...");
+        downloadPDF();
+        return;
+    }
+
     elm('loading-overlay').style.display = 'flex';
-    const opt = { margin: 0, filename: 'Invoice.pdf', image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' } };
-    html2pdf().set(opt).from(elm('invoice-content')).outputPdf('blob').then(blob => {
-        navigator.share({ files: [new File([blob], "Invoice.pdf", { type: "application/pdf" })], title: 'Invoice' })
-        .then(() => elm('loading-overlay').style.display = 'none')
-        .catch(e => { elm('loading-overlay').style.display = 'none'; });
+    const element = document.getElementById('invoice-content');
+    const opt = {
+        margin: 0,
+        filename: 'PaintFlow_Invoice.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+    };
+
+    html2pdf().set(opt).from(element).outputPdf('blob').then(function(blob) {
+        const file = new File([blob], "PaintFlow_Invoice.pdf", { type: "application/pdf" });
+        
+        if (navigator.canShare({ files: [file] })) {
+            navigator.share({
+                files: [file],
+                title: 'PaintFlow Invoice',
+                text: 'Here is your painting invoice.'
+            }).then(() => {
+                elm('loading-overlay').style.display = 'none';
+            }).catch((error) => {
+                // Fallback to save if share fails/cancelled
+                html2pdf().set(opt).from(element).save();
+                elm('loading-overlay').style.display = 'none';
+            });
+        } else {
+            // Fallback if file sharing not supported
+            html2pdf().set(opt).from(element).save();
+            elm('loading-overlay').style.display = 'none';
+        }
     });
 }
 
@@ -959,4 +1005,3 @@ function factoryReset() { if(confirm('Reset App?')) { localStorage.clear(); loca
 </script>
 </body>
 </html>
-                                                                                                                                                
