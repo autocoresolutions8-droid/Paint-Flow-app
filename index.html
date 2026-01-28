@@ -823,7 +823,7 @@ function renderInvoiceHTML(rec) {
 
     elm('invoice-content').innerHTML = `
         <div style="padding:30px;">
-            <div class="invoice-header"><div>${logo}</div><div class="text-right"><h2>INVOICE</h2><div class="text-sm">#${rec.invNo}</div><div class="text-sm">${rec.date}</div></div></div>
+            <div class="invoice-header"><div>${logo}</div>${logo}</div><div class="text-right"><h2>INVOICE</h2><div class="text-sm">#${rec.invNo}</div><div class="text-sm">${rec.date}</div></div></div>
             <div class="flex flex-between" style="margin-bottom:30px;">
                 <div><div class="text-bold">FROM:</div><div>${s.name||''}</div><div class="text-sm">${s.phone||''}</div><div class="text-sm">${(userPlan==='pro' && s.gst)?'GST: '+s.gst:''}</div></div>
                 <div class="text-right"><div class="text-bold">BILL TO:</div><div>${rec.client.name||''}</div><div class="text-sm">${rec.client.phone||''}</div><div class="text-sm">${rec.client.addr||''}</div></div>
@@ -849,7 +849,58 @@ function renderInvoiceHTML(rec) {
         </div>`;
 }
 
-// FIXED: PDF Download for APK
+async function shareInvoiceWhatsApp() {
+    if (typeof userPlan !== 'undefined' && userPlan === 'free') {
+        document.getElementById('upgrade-modal').style.display = 'flex';
+        return;
+    }
+
+    const element = document.getElementById('invoice-content');
+    const overlay = document.getElementById('loading-overlay');
+
+    if (overlay) overlay.style.display = 'flex';
+
+    try {
+        // Generate PDF in Memory (Blob)
+        const pdfBlob = await html2pdf()
+            .set({
+                margin: 0,
+                filename: 'PaintFlow_Invoice.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true },
+                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+            })
+            .from(element)
+            .outputPdf('blob');
+
+        // Create File Object
+        const file = new File([pdfBlob], "PaintFlow_Invoice.pdf", { type: "application/pdf" });
+
+        // Share via Web Share API
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            await navigator.share({
+                files: [file],
+                title: 'PaintFlow Invoice',
+                text: 'Here is your painting invoice.'
+            });
+        } else {
+            // Fallback: Download
+            alert("Direct sharing not supported on this device. Downloading PDF...");
+            const url = URL.createObjectURL(pdfBlob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'PaintFlow_Invoice.pdf';
+            a.click();
+        }
+
+    } catch (error) {
+        console.log("Sharing cancelled or failed", error);
+    } finally {
+        if (overlay) overlay.style.display = 'none';
+    }
+}
+
+// Fixed PDF Download Function
 function downloadPDF() {
     const element = document.getElementById('invoice-content');
     const opt = {
@@ -860,51 +911,6 @@ function downloadPDF() {
         jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
     };
     html2pdf().set(opt).from(element).save();
-}
-
-// FIXED: WhatsApp Share for APK
-function shareInvoiceWhatsApp() {
-    if(userPlan === 'free') return document.getElementById('upgrade-modal').style.display='flex';
-    
-    // Check for share API
-    if(!navigator.canShare) {
-        // Fallback for older WebViews: Direct Download
-        alert("Sharing not supported directly. Downloading PDF...");
-        downloadPDF();
-        return;
-    }
-
-    elm('loading-overlay').style.display = 'flex';
-    const element = document.getElementById('invoice-content');
-    const opt = {
-        margin: 0,
-        filename: 'PaintFlow_Invoice.pdf',
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true },
-        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-    };
-
-    html2pdf().set(opt).from(element).outputPdf('blob').then(function(blob) {
-        const file = new File([blob], "PaintFlow_Invoice.pdf", { type: "application/pdf" });
-        
-        if (navigator.canShare({ files: [file] })) {
-            navigator.share({
-                files: [file],
-                title: 'PaintFlow Invoice',
-                text: 'Here is your painting invoice.'
-            }).then(() => {
-                elm('loading-overlay').style.display = 'none';
-            }).catch((error) => {
-                // Fallback to save if share fails/cancelled
-                html2pdf().set(opt).from(element).save();
-                elm('loading-overlay').style.display = 'none';
-            });
-        } else {
-            // Fallback if file sharing not supported
-            html2pdf().set(opt).from(element).save();
-            elm('loading-overlay').style.display = 'none';
-        }
-    });
 }
 
 function saveSettings() {
