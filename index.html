@@ -732,7 +732,8 @@ function calculateTotal() {
         calcTxt = `Paint (${l}L x ₹${pr})`;
     }
 
-    const labCost = (parseFloat(val('labour-count'))||0) * (parseFloat(val('labour-days'))||0) * (parseFloat(val('labour-wage'))||0);
+    const labCost =
+        (parseFloat(val('labour-count'))||0) * (parseFloat(val('labour-days'))||0) * (parseFloat(val('labour-wage'))||0);
     let exCost = 0; appData.extras.forEach(e => exCost += (parseFloat(e.cost)||0));
     
     let sub = paintCost + labCost + exCost;
@@ -823,7 +824,7 @@ function renderInvoiceHTML(rec) {
 
     elm('invoice-content').innerHTML = `
         <div style="padding:30px;">
-            <div class="invoice-header"><div>${logo}</div>${logo}</div><div class="text-right"><h2>INVOICE</h2><div class="text-sm">#${rec.invNo}</div><div class="text-sm">${rec.date}</div></div></div>
+            <div class="invoice-header"><div>${logo}</div><div class="text-right"><h2>INVOICE</h2><div class="text-sm">#${rec.invNo}</div><div class="text-sm">${rec.date}</div></div></div>
             <div class="flex flex-between" style="margin-bottom:30px;">
                 <div><div class="text-bold">FROM:</div><div>${s.name||''}</div><div class="text-sm">${s.phone||''}</div><div class="text-sm">${(userPlan==='pro' && s.gst)?'GST: '+s.gst:''}</div></div>
                 <div class="text-right"><div class="text-bold">BILL TO:</div><div>${rec.client.name||''}</div><div class="text-sm">${rec.client.phone||''}</div><div class="text-sm">${rec.client.addr||''}</div></div>
@@ -849,6 +850,9 @@ function renderInvoiceHTML(rec) {
         </div>`;
 }
 
+// ----------------------------------------------------
+//  MEDIAN NATIVE SHARE BRIDGE (APK FIX)
+// ----------------------------------------------------
 async function shareInvoiceWhatsApp() {
     if (typeof userPlan !== 'undefined' && userPlan === 'free') {
         document.getElementById('upgrade-modal').style.display = 'flex';
@@ -857,11 +861,11 @@ async function shareInvoiceWhatsApp() {
 
     const element = document.getElementById('invoice-content');
     const overlay = document.getElementById('loading-overlay');
-
+    
     if (overlay) overlay.style.display = 'flex';
 
     try {
-        // Generate PDF in Memory (Blob)
+        // 1. Generate PDF as Blob
         const pdfBlob = await html2pdf()
             .set({
                 margin: 0,
@@ -873,34 +877,55 @@ async function shareInvoiceWhatsApp() {
             .from(element)
             .outputPdf('blob');
 
-        // Create File Object
-        const file = new File([pdfBlob], "PaintFlow_Invoice.pdf", { type: "application/pdf" });
+        // 2. Convert Blob to Base64
+        const reader = new FileReader();
+        reader.readAsDataURL(pdfBlob); 
+        reader.onloadend = function() {
+            const base64data = reader.result;                
+            const data = base64data.split(',')[1]; // Remove "data:application/pdf;base64,"
 
-        // Share via Web Share API
-        if (navigator.canShare && navigator.canShare({ files: [file] })) {
-            await navigator.share({
-                files: [file],
-                title: 'PaintFlow Invoice',
-                text: 'Here is your painting invoice.'
-            });
-        } else {
-            // Fallback: Download
-            alert("Direct sharing not supported on this device. Downloading PDF...");
-            const url = URL.createObjectURL(pdfBlob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'PaintFlow_Invoice.pdf';
-            a.click();
+            // 3. MEDIAN BRIDGE (Check for WebView context)
+            if (navigator.userAgent.indexOf('wv') > -1 || window.Median) { 
+                 if(window.Median && window.Median.share) {
+                     window.Median.share({
+                        text: 'Here is your painting invoice.',
+                        package: 'com.whatsapp', // Force WhatsApp
+                        files: [{
+                            name: 'PaintFlow_Invoice.pdf',
+                            type: 'application/pdf',
+                            base64: data
+                        }]
+                    });
+                 } else {
+                     // Fallback if bridge not ready: Download
+                     saveAs(pdfBlob, 'PaintFlow_Invoice.pdf'); 
+                 }
+            } else {
+                // 4. BROWSER FALLBACK
+                const file = new File([pdfBlob], "PaintFlow_Invoice.pdf", { type: "application/pdf" });
+                if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                    navigator.share({
+                        files: [file],
+                        title: 'PaintFlow Invoice',
+                        text: 'Here is your painting invoice.'
+                    });
+                } else {
+                    const url = URL.createObjectURL(pdfBlob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'PaintFlow_Invoice.pdf';
+                    a.click();
+                }
+            }
+            if (overlay) overlay.style.display = 'none';
         }
-
-    } catch (error) {
-        console.log("Sharing cancelled or failed", error);
-    } finally {
+    } catch (e) {
+        console.error(e);
+        alert("Error generating PDF");
         if (overlay) overlay.style.display = 'none';
     }
 }
 
-// Fixed PDF Download Function
 function downloadPDF() {
     const element = document.getElementById('invoice-content');
     const opt = {
