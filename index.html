@@ -334,6 +334,7 @@
             
             <div id="pro-settings-wrapper" style="position: relative;">
                 <div class="form-group"><label>Logo Image <span class="pro-badge">PRO</span></label><input type="file" id="set-logo" accept="image/*"><div id="preview-logo" style="margin-top: 10px;"></div></div>
+                <div class="form-group"><label>Payment QR <span class="pro-badge">PRO</span></label><input type="file" id="set-qr" accept="image/*"><div id="preview-qr" style="margin-top: 10px;"></div></div>
                 
                 <div id="settings-lock-overlay" class="locked-overlay" style="display:none;">
                     <div class="lock-icon">🔒</div>
@@ -377,18 +378,35 @@ const create = (tag) => document.createElement(tag);
 const val = (id) => elm(id).value;
 const setVal = (id, v) => elm(id).value = v;
 
-document.addEventListener('DOMContentLoaded', () => {
-    try { initApp(); } catch(e) { console.error(e); }
-});
+window.addEventListener('load', initApp);
+if (document.readyState === 'complete') initApp();
 
+let appInitialized = false;
 function initApp() {
-    checkAuth();
-    setInterval(updateClock, 1000);
-    loadSettings();
-    if(appData.rooms.length === 0) addRoom();
-    document.addEventListener('input', (e) => {
-        if(e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') calculateTotal();
-    });
+    if (appInitialized) return;
+    appInitialized = true;
+    
+    setTimeout(() => {
+        const splash = document.getElementById('screen-splash');
+        if (splash && splash.classList.contains('active')) {
+            splash.classList.remove('active');
+            if (!localStorage.getItem('paintflow_user_phone')) {
+                document.getElementById('screen-login').classList.add('active');
+            }
+        }
+    }, 2000);
+
+    try {
+        checkAuth();
+        setInterval(updateClock, 1000);
+        loadSettings();
+        if(appData.rooms.length === 0) addRoom();
+        document.addEventListener('input', (e) => {
+            if(e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') calculateTotal();
+        });
+    } catch(e) {
+        console.error("Init Error", e);
+    }
 }
 
 function updateClock() {
@@ -405,9 +423,9 @@ function checkAuth() {
         userPlan = localStorage.getItem('paintflow_plan') || 'free';
         invCount = parseInt(localStorage.getItem('paintflow_inv_count') || '0');
         updateUIForPlan();
-        setTimeout(() => showScreen('screen-dashboard'), 500);
+        showScreen('screen-dashboard');
     } else {
-        setTimeout(() => showScreen('screen-login'), 500);
+        showScreen('screen-login');
     }
 }
 
@@ -423,7 +441,6 @@ function updateUIForPlan() {
         setLock.style.display = 'none';
         if(exBadge) exBadge.style.display = 'none';
         
-        // Enable Inputs in Settings
         elm('set-logo').disabled = false;
         elm('set-qr').disabled = false;
     } else {
@@ -432,7 +449,6 @@ function updateUIForPlan() {
         setLock.style.display = 'flex';
         if(exBadge) exBadge.style.display = 'inline-block';
         
-        // Disable Inputs & Toggles if Free
         elm('set-logo').disabled = true;
         elm('set-qr').disabled = true;
         if(elm('gst-toggle')) {
@@ -447,7 +463,6 @@ function attemptLogin() {
     if(phone.length < 10) return alert('Enter valid number');
     localStorage.setItem('paintflow_user_phone', phone);
     
-    // Check if first time
     if (!localStorage.getItem('paintflow_plan')) {
         showScreen('screen-activation');
     } else {
@@ -551,15 +566,11 @@ function resetCalculator() {
 
 // --- ROOMS ---
 function addRoom() {
-    // BUG FIX: Force refresh plan status
     const currentPlan = localStorage.getItem('paintflow_plan') || 'free';
-    
-    // ROOM LIMIT FOR FREE USERS
     if(currentPlan === 'free' && appData.rooms.length >= 2) {
         document.getElementById('upgrade-modal').style.display = 'flex';
         return;
     }
-
     const id = Date.now();
     appData.rooms.push({ id: id, walls: [] });
     renderRooms(); addWall(id);
@@ -663,10 +674,7 @@ function saveInputStates() {
 }
 
 function addExtra() { 
-    // BUG FIX: Force refresh plan status
     const currentPlan = localStorage.getItem('paintflow_plan') || 'free';
-
-    // EXTRA ITEM LIMIT FOR FREE USERS
     if(currentPlan === 'free') {
         document.getElementById('upgrade-modal').style.display = 'flex';
         return;
@@ -738,7 +746,6 @@ function calculateTotal() {
     
     let gstAmt = 0, gstRate = 0, gstOn = false;
     
-    // Only allow GST if Pro
     if(userPlan === 'pro') {
         gstOn = elm('gst-toggle').checked;
         const gstInput = elm('gst-rate');
@@ -759,10 +766,7 @@ function calculateTotal() {
 }
 
 function generateInvoice() {
-    // BUG FIX: Force refresh plan status
     const currentPlan = localStorage.getItem('paintflow_plan') || 'free';
-    
-    // 3 INVOICE LIMIT FOR FREE USERS (PRO Bypasses)
     if(currentPlan === 'free' && invCount >= 3) {
         document.getElementById('upgrade-modal').style.display = 'flex';
         return;
@@ -883,21 +887,16 @@ async function shareInvoiceWhatsApp() {
             const data = base64data.split(',')[1]; // Remove "data:application/pdf;base64,"
 
             // 3. MEDIAN BRIDGE (Check for WebView context)
-            if (navigator.userAgent.indexOf('wv') > -1 || window.Median) { 
-                 if(window.Median && window.Median.share) {
-                     window.Median.share({
-                        text: 'Here is your painting invoice.',
-                        package: 'com.whatsapp', // Force WhatsApp
-                        files: [{
-                            name: 'PaintFlow_Invoice.pdf',
-                            type: 'application/pdf',
-                            base64: data
-                        }]
-                    });
-                 } else {
-                     // Fallback if bridge not ready: Download
-                     downloadPDF(); 
-                 }
+            if (window.Median && window.Median.share) { 
+                 window.Median.share({
+                    text: 'Here is your painting invoice.',
+                    package: 'com.whatsapp', // Force WhatsApp
+                    files: [{
+                        name: 'PaintFlow_Invoice.pdf',
+                        type: 'application/pdf',
+                        base64: data
+                    }]
+                });
             } else {
                 // 4. BROWSER FALLBACK
                 const file = new File([pdfBlob], "PaintFlow_Invoice.pdf", { type: "application/pdf" });
