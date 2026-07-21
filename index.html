@@ -3,40 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#121212">
-    <title>PaintFlow - Contractor OS</title>
+    <meta name="theme-color" content="#121212" id="meta-theme-color">
+    <title>PaintFlow OS - Contractor System</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <style>
-        /* PREMIUM COLOR PALETTE & VARIABLES */
+        /* PREMIUM COLOR PALETTE & RESPONSIVE VARIABLES */
         :root {
             --primary: #FF5722; 
             --primary-dark: #E64A19;
             --secondary: #455A64; /* Dark Slate */
-            --bg: #F4F7F9;
+            --bg: #F0F4F8;
             --surface: #FFFFFF;
-            --border: #E0E6ED;
+            --border: #CFD8DC;
             --text: #202124;
             --text-light: #5F6368;
             --danger: #E53935;
             --success: #43A047;
             --warning: #FB8C00;
-            --gold: #FFC107;
+            --gold: #FFB300;
             --accent-purple: #7E57C2;
             --accent-teal: #00897B;
             --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            
+            /* Desktop/Tablet Default Scaling */
+            --radius-card: 16px;
+            --radius-btn: 12px;
+            --padding-card: 24px;
+            --padding-input: 16px;
+            --font-base: 16px;
+            
             --shadow-sm: 0 4px 12px rgba(0,0,0,0.05);
             --shadow-md: 0 8px 24px rgba(0,0,0,0.08);
             --shadow-lg: 0 16px 32px rgba(0,0,0,0.12);
-            --radius: 16px;
+        }
+
+        /* MOBILE FIRST SCALING (Req 23) */
+        @media (max-width: 768px) {
+            :root {
+                --radius-card: 12px;
+                --radius-btn: 10px;
+                --padding-card: 16px;
+                --padding-input: 14px;
+                --font-base: 14px;
+            }
         }
 
         body.dark-mode {
             --bg: #121212; 
             --surface: #1E1E1E; 
-            --border: #2C2C2C; 
-            --text: #F1F3F4;
+            --border: #2D2D2D; 
+            --text: #E8EAED;
             --text-light: #9AA0A6; 
             --secondary: #90A4AE; 
             --shadow-sm: 0 4px 12px rgba(0,0,0,0.4);
@@ -45,23 +63,22 @@
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { margin: 0; padding: 0; padding-top: 64px; font-family: var(--font-main); background: var(--bg); color: var(--text); padding-bottom: 50px; transition: background 0.3s, color 0.3s; }
+        html, body { margin: 0; padding: 0; font-size: var(--font-base); font-family: var(--font-main); background: var(--bg); color: var(--text); transition: background 0.3s, color 0.3s; }
+        body { padding-top: 64px; padding-bottom: 40px; }
 
         /* TYPOGRAPHY */
         h1, h2, h3, h4 { margin: 0; font-weight: 700; color: var(--text); }
-        .section-heading { font-size: 1.4rem; font-weight: 800; color: var(--text); margin-bottom: 20px; letter-spacing: 0.2px; }
+        .section-heading { font-size: 1.35rem; font-weight: 800; font-style: italic; color: var(--text); margin-bottom: 16px; letter-spacing: 0.2px; }
         .text-sm { font-size: 0.9rem; color: var(--text-light); }
         .text-center { text-align: center; }
         .text-right { text-align: right; }
         .text-bold { font-weight: 700; }
         .text-primary { color: var(--primary); }
-        .text-gold { color: #F57F17; }
-        .text-success { color: var(--success); }
         .text-danger { color: var(--danger); }
 
         /* LAYOUT & CARDS */
-        .container { max-width: 800px; margin: 0 auto; padding: 16px; }
-        .card { background: var(--surface); border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow-sm); margin-bottom: 24px; position: relative; border: 1px solid var(--border); transition: transform 0.2s, box-shadow 0.2s; }
+        .container { max-width: 900px; margin: 0 auto; padding: 16px; }
+        .card { background: var(--surface); border-radius: var(--radius-card); padding: var(--padding-card); box-shadow: var(--shadow-sm); margin-bottom: 20px; position: relative; border: 1px solid var(--border); transition: transform 0.2s, box-shadow 0.2s; }
         .flex { display: flex; align-items: center; }
         .flex-between { justify-content: space-between; }
         .gap-10 { gap: 12px; }
@@ -69,49 +86,48 @@
         .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
 
         /* FORMS & INPUTS */
-        .form-group { margin-bottom: 20px; width: 100%; }
-        label { display: block; margin-bottom: 8px; font-size: 0.95rem; font-weight: 600; color: var(--secondary); }
-        input, select, textarea { width: 100%; padding: 16px; border: 1.5px solid var(--border); border-radius: 12px; font-size: 1rem; background: var(--bg); color: var(--text); transition: all 0.2s; }
-        input:focus, select:focus, textarea:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 4px rgba(255, 87, 34, 0.15); background: var(--surface); }
+        .form-group { margin-bottom: 16px; width: 100%; }
+        label { display: block; margin-bottom: 6px; font-size: 0.95rem; font-weight: 700; color: var(--secondary); }
+        input, select, textarea { width: 100%; padding: var(--padding-input); border: 1.5px solid var(--border); border-radius: var(--radius-btn); font-size: 1rem; background: var(--bg); color: var(--text); transition: all 0.2s; }
+        input:focus, select:focus, textarea:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 3px rgba(255, 87, 34, 0.15); background: var(--surface); }
         input:disabled, select:disabled { opacity: 0.6; cursor: not-allowed; }
 
         /* TOGGLES */
-        .switch { position: relative; display: inline-block; width: 50px; height: 28px; flex-shrink: 0; }
+        .switch { position: relative; display: inline-block; width: 48px; height: 26px; flex-shrink: 0; }
         .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #B0BEC5; transition: .4s; border-radius: 34px; }
-        .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #90A4AE; transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
         input:checked + .slider { background-color: var(--primary); }
         input:checked + .slider:before { transform: translateX(22px); }
 
-        /* THEME TOGGLE BUTTON */
-        .theme-toggle-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 18px; background: var(--bg); border: 1.5px solid var(--border); border-radius: 30px; cursor: pointer; font-weight: 700; font-size: 0.95rem; color: var(--text); transition: all 0.2s; }
-        .theme-toggle-btn:active { transform: scale(0.95); }
-
         /* BUTTONS */
-        .btn { display: inline-flex; justify-content: center; align-items: center; padding: 16px 24px; border-radius: 12px; font-weight: 700; cursor: pointer; border: none; transition: all 0.2s ease; font-size: 1.05rem; width: 100%; box-shadow: var(--shadow-sm); }
+        .btn { display: inline-flex; justify-content: center; align-items: center; padding: var(--padding-input) 20px; border-radius: var(--radius-btn); font-weight: 700; cursor: pointer; border: none; transition: all 0.2s ease; font-size: 1.05rem; width: 100%; box-shadow: var(--shadow-sm); }
         .btn:active { transform: scale(0.97); }
         .btn-primary { background: var(--primary); color: white; }
         .btn-primary:hover { background: var(--primary-dark); box-shadow: var(--shadow-md); }
         .btn-secondary { background: var(--secondary); color: white; }
         .btn-whatsapp { background: #25D366; color: white; }
         .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); box-shadow: none; }
-        .btn-danger { background: rgba(229, 57, 53, 0.1); color: var(--danger); border: 1px solid var(--danger); box-shadow: none; }
+        .btn-danger { background: rgba(229, 57, 53, 0.1); color: var(--danger); border: 1.5px solid var(--danger); box-shadow: none; }
         body.dark-mode .btn-danger { background: rgba(229, 57, 53, 0.2); }
-        .btn-gold { background: linear-gradient(135deg, #FFD54F, #FF9800); color: #111; text-shadow: 0 1px 1px rgba(255,255,255,0.4); }
+        .btn-gold { background: linear-gradient(135deg, #FFD54F, #FF9800); color: #111; }
         .btn-sm { padding: 10px 16px; font-size: 0.95rem; width: auto; }
+
+        /* CIRCULAR DELETE BUTTON (Req 24) */
+        .del-circle-btn { background: var(--danger); color: white; width: 26px; height: 26px; border-radius: 50%; display: inline-flex; justify-content: center; align-items: center; cursor: pointer; font-size: 11px; flex-shrink: 0; box-shadow: 0 2px 6px rgba(229, 57, 53, 0.4); transition: transform 0.2s; user-select: none; }
+        .del-circle-btn:active { transform: scale(0.85); }
 
         /* BADGES & LOCKS */
         .pro-badge { background: var(--gold); color: black; padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: 800; margin-left: 8px; }
         .premium-badge { background: var(--accent-purple); color: white; padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: 800; margin-left: 8px; }
-        
-        .locked-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255,255,255,0.2); z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: var(--radius); cursor: pointer; transition: background 0.3s; }
-        .locked-overlay:hover { background: rgba(255,255,255,0.4); }
-        body.dark-mode .locked-overlay { background: rgba(0,0,0,0.2); }
-        body.dark-mode .locked-overlay:hover { background: rgba(0,0,0,0.4); }
-        .lock-icon-ui { font-size: 3rem; text-shadow: 0px 2px 8px rgba(0,0,0,0.3); margin-bottom: 10px; }
+        .locked-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255,255,255,0.1); z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: var(--radius-card); cursor: pointer; transition: background 0.3s; backdrop-filter: blur(1px); }
+        .locked-overlay:hover { background: rgba(255,255,255,0.3); }
+        body.dark-mode .locked-overlay { background: rgba(0,0,0,0.3); }
+        body.dark-mode .locked-overlay:hover { background: rgba(0,0,0,0.5); }
+        .lock-icon-ui { font-size: 3rem; text-shadow: 0px 4px 12px rgba(0,0,0,0.4); margin-bottom: 10px; }
 
         /* SUBSCRIPTION CARDS */
-        .sub-card { background: var(--surface); color: var(--text); border-radius: 20px; padding: 30px; display: flex; flex-direction: column; position: relative; border: 1px solid var(--border); box-shadow: var(--shadow-md); margin-bottom: 25px;}
+        .sub-card { background: var(--surface); color: var(--text); border-radius: 20px; padding: 24px; display: flex; flex-direction: column; position: relative; border: 1px solid var(--border); box-shadow: var(--shadow-md); margin-bottom: 24px;}
         body.dark-mode .sub-card { background: #1A1A24; }
         .sub-card.basic { border-top: 6px solid #FF9800; }
         .sub-card.premium { border-top: 6px solid #03A9F4; }
@@ -123,38 +139,23 @@
         .sub-list .check { color: var(--success); margin-right: 12px; font-size: 1.3rem; font-weight: bold;}
         .sub-list .cross { color: var(--danger); margin-right: 12px; font-size: 1.3rem; font-weight: bold;}
 
-        /* MODALS */
+        /* TOAST & MODALS */
+        .toast { position: fixed; top: 20px; left: 50%; transform: translate(-50%, -20px); background: #323232; color: white; padding: 16px 24px; border-radius: 12px; opacity: 0; pointer-events: none; transition: opacity 0.3s, transform 0.3s; z-index: 9999; box-shadow: var(--shadow-lg); font-weight: 700; text-align: center; min-width: 280px; font-size: 1.05rem; }
+        .toast.show { opacity: 1; transform: translate(-50%, 0); }
+        
         .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 3000; display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
         .modal-content { background: var(--surface); width: 100%; max-width: 420px; padding: 30px; border-radius: 20px; box-shadow: var(--shadow-lg); transform: translateY(20px); transition: transform 0.3s; }
         .modal-overlay.active .modal-content { transform: translateY(0); }
 
         /* CALCULATOR BLOCKS */
-        .room-block { border-left: 6px solid var(--primary); padding-left: 20px; margin-bottom: 30px; }
-        .wall-block { background: var(--bg); padding: 20px; border-radius: 12px; margin-top: 15px; border: 1px solid var(--border); }
-        .deduction-row { display: flex; gap: 12px; align-items: center; margin-top: 15px; }
+        .room-block { border-left: 6px solid var(--primary); padding-left: 16px; margin-bottom: 30px; }
+        .wall-block { background: var(--bg); padding: 16px; border-radius: 12px; margin-top: 15px; border: 1px solid var(--border); }
         .math-display { font-family: monospace; background: rgba(255, 193, 7, 0.08); color: var(--text); padding: 20px; border-radius: 12px; font-size: 1rem; white-space: pre-wrap; line-height: 1.6; border: 1.5px dashed var(--warning); }
         
-        /* FAB */
-        .fab { position: fixed; bottom: 35px; right: 25px; width: 68px; height: 68px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 24px rgba(255, 87, 34, 0.45); z-index: 100; cursor: pointer; transition: transform 0.2s, background 0.2s; }
-        .fab:hover { background: var(--primary-dark); }
-        .fab:active { transform: scale(0.9); }
-        .fab svg { width: 32px; height: 32px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
-
-        /* APP SCREENS */
-        .screen { display: none; }
-        .screen.active { display: block; animation: fadeIn 0.3s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        
-        /* INVOICE PREVIEW */
-        .invoice-preview { background: white; color: black; padding: 0; }
-        .invoice-header { display: flex; justify-content: space-between; margin-bottom: 25px; border-bottom: 2px solid var(--primary); padding-bottom: 20px; }
-        .logo-img { max-height: 90px; max-width: 180px; object-fit: contain; }
-        .qr-img { width: 130px; height: 130px; object-fit: contain; border: 1px solid #EEE; padding: 5px; background: white; border-radius: 8px; }
-        
-        /* TOP HEADER & SIDE DRAWER (MOBILE FIRST) */
-        .top-app-bar { position: fixed; top: 0; left: 0; right: 0; height: 64px; background: var(--surface); box-shadow: var(--shadow-sm); z-index: 900; display: flex; align-items: center; padding: 0 20px; border-bottom: 1px solid var(--border); display: none; }
-        .hamburger { font-size: 1.8rem; color: var(--text); cursor: pointer; margin-right: 20px; padding: 5px; }
+        /* SIDE DRAWER NAVIGATION */
+        .top-app-bar { position: fixed; top: 0; left: 0; right: 0; height: 64px; background: var(--surface); box-shadow: var(--shadow-sm); z-index: 900; display: flex; align-items: center; padding: 0 16px; border-bottom: 1px solid var(--border); display: none; }
+        .hamburger { font-size: 1.8rem; color: var(--text); cursor: pointer; margin-right: 16px; padding: 5px; }
         .app-title { font-size: 1.4rem; font-weight: 800; color: var(--primary); font-style: italic; }
         
         .drawer-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
@@ -168,42 +169,46 @@
         .drawer-icon { font-size: 1.4rem; margin-right: 16px; width: 26px; text-align: center; }
 
         /* LISTS & DASHBOARD */
-        .stat-card { text-align: center; padding: 24px; border-radius: 16px; background: var(--surface); border: 1px solid var(--border); box-shadow: var(--shadow-sm); }
+        .stat-card { text-align: center; padding: 20px; border-radius: 16px; background: var(--surface); border: 1px solid var(--border); box-shadow: var(--shadow-sm); }
         .stat-card-green { border-left: 6px solid var(--success); }
         .stat-card-red { border-left: 6px solid var(--danger); }
         .stat-card-teal { border-left: 6px solid var(--accent-teal); }
         .stat-card-orange { border-left: 6px solid var(--primary); }
         .stat-card-purple { border-left: 6px solid var(--accent-purple); }
         
-        .list-item { display: flex; justify-content: space-between; align-items: center; padding: 20px; border-bottom: 1px solid var(--border); }
+        .list-item { display: flex; justify-content: space-between; align-items: center; padding: 16px; border-bottom: 1px solid var(--border); }
         .list-item:last-child { border-bottom: none; }
-        .list-title { font-weight: 800; margin-bottom: 6px; font-size: 1.15rem; }
         .search-bar { display: flex; gap: 12px; margin-bottom: 20px; position: sticky; top: 64px; z-index: 10; background: var(--bg); padding-top: 15px; padding-bottom: 10px; }
         
         /* Structured Data Card for Inventory/Customers */
-        .data-card { display: block; position: relative; padding: 20px; }
-        .data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 12px; }
+        .data-card { display: block; position: relative; padding: 16px; }
+        .data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
         .data-label { font-size: 0.85rem; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; margin-bottom: 4px; }
         .data-value { font-size: 1.1rem; font-weight: 700; color: var(--text); }
 
+        .screen { display: none; }
+        .screen.active { display: block; animation: fadeIn 0.3s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
         @media print { 
-            .no-print, .fab, .top-app-bar, .side-drawer, .drawer-overlay, .screen:not(#screen-invoice) { display: none !important; } 
+            .no-print, .top-app-bar, .side-drawer, .drawer-overlay, .screen:not(#screen-invoice) { display: none !important; } 
             #screen-invoice { display: block !important; } 
             .card { box-shadow: none; padding: 0; border: none; }
-            body { background: white; padding: 0; }
+            body { background: white; padding: 0; color: black; }
         }
     </style>
 </head>
 <body>
 
-<div id="toast" style="position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #202124; color: white; padding: 16px 32px; border-radius: 12px; opacity: 0; pointer-events: none; transition: opacity 0.3s; z-index: 9999; box-shadow: var(--shadow-lg); font-weight: 700; text-align: center; min-width: 280px; font-size: 1.05rem;"></div>
+<div id="toast" class="toast"></div>
 
 <div id="loading-overlay" style="display:none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); z-index: 5000; align-items: center; justify-content: center; color: white; flex-direction: column;">
     <div style="color:white; margin-bottom:20px; font-weight:800; font-size:1.3rem;">Processing...</div>
     <div style="width: 50px; height: 50px; border: 5px solid #FFF; border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite;"></div>
+    <style>@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }</style>
 </div>
 
-<!-- TOP APP BAR (MOBILE FIRST NAV) -->
+<!-- TOP APP BAR -->
 <div class="top-app-bar" id="main-header">
     <div class="hamburger" onclick="toggleDrawer()">☰</div>
     <div class="app-title">PaintFlow OS</div>
@@ -213,33 +218,35 @@
 <div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
 <div class="side-drawer" id="side-drawer">
     <div class="drawer-header">PaintFlow OS</div>
-    <div class="drawer-item active" onclick="navTo('screen-dashboard', this)" id="nav-dashboard">
+    <div class="drawer-item active" onclick="navTo('screen-dashboard', this)">
         <span class="drawer-icon">📊</span> Dashboard
     </div>
-    <div class="drawer-item" onclick="navTo('screen-projects', this)" id="nav-projects">
+    <div class="drawer-item" onclick="navTo('screen-projects', this)">
         <span class="drawer-icon">🧮</span> Calculator
     </div>
-    <div class="drawer-item" onclick="navTo('screen-crm', this)" id="nav-crm">
+    <div class="drawer-item" onclick="navTo('screen-crm', this)">
         <span class="drawer-icon">👥</span> Customer Details
     </div>
-    <div class="drawer-item" onclick="navTo('screen-manage', this)" id="nav-manage">
+    <div class="drawer-item" onclick="navTo('screen-manage', this)">
         <span class="drawer-icon">💼</span> Management
     </div>
-    <div class="drawer-item" onclick="navTo('screen-settings', this)" id="nav-settings">
+    <div class="drawer-item" onclick="navTo('screen-settings', this)">
         <span class="drawer-icon">⚙️</span> Company Profile
     </div>
 </div>
 
+<!-- SPLASH SCREEN -->
 <div id="screen-splash" class="screen active">
     <div class="container" style="height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; margin-top: -64px;">
-        <h1 style="font-size: 3.5rem; color: var(--primary); font-style: italic; font-weight: 900;">PaintFlow OS</h1>
-        <p style="font-size: 1.25rem; color:var(--secondary); margin-top:10px; font-weight: 700;">Contractor Operating System</p>
-        <div style="margin-top: 40px; width: 50px; height: 50px; border: 5px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite;"></div>
+        <h1 style="font-size: 3.2rem; color: var(--primary); font-style: italic; font-weight: 900;">PaintFlow OS</h1>
+        <p style="font-size: 1.15rem; color:var(--secondary); margin-top:10px; font-weight: 700;">Contractor Operating System</p>
+        <div style="margin-top: 40px; width: 45px; height: 45px; border: 5px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite;"></div>
     </div>
 </div>
 
+<!-- LOGIN SCREEN -->
 <div id="screen-login" class="screen">
-    <div class="container" style="padding-top: 50px;">
+    <div class="container" style="padding-top: 20px;">
         <div class="card">
             <h2 class="section-heading text-center" style="font-size:1.8rem;">Contractor Login</h2>
             <div class="form-group">
@@ -264,14 +271,14 @@
 <!-- SUBSCRIPTION SCREEN -->
 <div id="screen-subscription" class="screen">
     <div class="container">
-        <!-- Back Button -->
+        <!-- Back Button Added -->
         <div style="margin-bottom: 20px;">
             <button class="btn btn-sm btn-secondary" onclick="goBack()" style="background: transparent; color: var(--text); border: 2px solid var(--border); width: auto; font-weight:800;">← Back</button>
         </div>
 
-        <div class="text-center" style="margin-bottom: 35px; margin-top: 10px;">
+        <div class="text-center" style="margin-bottom: 30px;">
             <h1 class="text-primary" style="font-style:italic; font-weight:900; font-size:2rem;">👑 Subscription Plans</h1>
-            <p class="text-sm" style="font-size:1.1rem; margin-top:8px; font-weight:600;">Choose the best subscription for your business.</p>
+            <p class="text-sm" style="font-size:1.05rem; margin-top:8px; font-weight:600;">Choose the best subscription for your business.</p>
         </div>
 
         <div class="sub-card">
@@ -320,10 +327,10 @@
             <button class="btn btn-outline" style="background:var(--bg);" onclick="openActivationModal()">Activate Code</button>
         </div>
 
-        <!-- Clean Contact Section (Final Element) -->
-        <div style="margin-top: 40px; text-align: center; padding: 25px; border-top: 1.5px solid var(--border);">
-            <div class="text-sm" style="color: var(--secondary); font-weight: 700; font-size: 1.05rem;">Contact Admin to Buy Activation Code</div>
-            <div style="font-weight: 900; font-size: 1.25rem; margin-top: 8px; color: var(--primary);">📧 autocoresolutions8@gmail.com</div>
+        <!-- Clean Contact Section -->
+        <div style="margin-top: 30px; text-align: center; padding: 20px; border-top: 1.5px solid var(--border);">
+            <div class="text-sm" style="color: var(--secondary); font-weight: 700; font-size: 1rem;">Contact Admin to Buy Activation Code</div>
+            <div style="font-weight: 900; font-size: 1.2rem; margin-top: 8px; color: var(--primary);">📧 autocoresolutions8@gmail.com</div>
         </div>
     </div>
 </div>
@@ -331,9 +338,9 @@
 <!-- ACTIVATION MODAL -->
 <div id="activation-modal" class="modal-overlay">
     <div class="modal-content">
-        <h3 class="section-heading text-center" style="margin-bottom: 25px;">Enter Activation Code</h3>
-        <input type="text" id="modal-activation-code" placeholder="Enter Code" style="text-align: center; letter-spacing: 2px; font-weight: bold; font-size:1.2rem; text-transform:uppercase;">
-        <div class="grid-2" style="margin-top:25px;">
+        <h3 class="section-heading text-center" style="margin-bottom: 20px;">Enter Activation Code</h3>
+        <input type="text" id="modal-activation-code" placeholder="Enter Code" style="text-align: center; letter-spacing: 2px; font-weight: bold; font-size:1.15rem; text-transform:uppercase;">
+        <div class="grid-2" style="margin-top:20px;">
             <button class="btn btn-primary" onclick="verifyActivationCode()">Activate</button>
             <button class="btn btn-secondary" onclick="closeActivationModal()">Cancel</button>
         </div>
@@ -342,57 +349,57 @@
 
 <!-- ================== MAIN APP SCREENS ================== -->
 
+<!-- DASHBOARD SCREEN -->
 <div id="screen-dashboard" class="screen main-ui">
     <div class="container">
-        <div class="flex flex-between" style="margin-bottom: 25px;">
+        <div class="flex flex-between" style="margin-bottom: 20px;">
             <h2 class="section-heading" style="margin:0;">Dashboard <span id="user-badge" class="pro-badge" style="display:none">BASIC</span> <span id="user-premium-badge" class="premium-badge" style="display:none">PREMIUM</span></h2>
         </div>
-        <div class="grid-2" style="margin-bottom: 25px;">
+        <div class="grid-2" style="margin-bottom: 24px;">
             <div class="stat-card stat-card-orange">
-                <div class="text-sm text-bold" style="font-size:1rem;">Total Revenue</div>
-                <div class="text-bold text-primary" style="font-size:2rem; margin-top:8px;" id="dash-revenue">₹0</div>
+                <div class="text-sm text-bold" style="font-size:0.95rem;">Total Revenue</div>
+                <div class="text-bold text-primary" style="font-size:1.8rem; margin-top:8px;" id="dash-revenue">₹0</div>
             </div>
             <div class="stat-card stat-card-red">
-                <div class="text-sm text-bold" style="font-size:1rem;">Total Expenses</div>
-                <div class="text-bold text-danger" style="font-size:2rem; margin-top:8px;" id="dash-expenses">₹0</div>
+                <div class="text-sm text-bold" style="font-size:0.95rem;">Total Expenses</div>
+                <div class="text-bold text-danger" style="font-size:1.8rem; margin-top:8px;" id="dash-expenses">₹0</div>
             </div>
             <div class="stat-card stat-card-teal">
-                <div class="text-sm text-bold" style="font-size:1rem;">Received Payments</div>
-                <div class="text-bold" style="font-size:2rem; margin-top:8px; color:var(--accent-teal);" id="dash-received">₹0</div>
+                <div class="text-sm text-bold" style="font-size:0.95rem;">Received Payments</div>
+                <div class="text-bold" style="font-size:1.8rem; margin-top:8px; color:var(--accent-teal);" id="dash-received">₹0</div>
             </div>
             <div class="stat-card" style="border-left: 6px solid var(--warning);">
-                <div class="text-sm text-bold" style="font-size:1rem;">Pending Payments</div>
-                <div class="text-bold" style="color:var(--warning); font-size:2rem; margin-top:8px;" id="dash-pending">₹0</div>
+                <div class="text-sm text-bold" style="font-size:0.95rem;">Pending Payments</div>
+                <div class="text-bold" style="color:var(--warning); font-size:1.8rem; margin-top:8px;" id="dash-pending">₹0</div>
             </div>
             <div class="stat-card stat-card-purple" style="grid-column: span 2;">
-                <div class="text-sm text-bold" style="font-size:1.1rem;">Estimated Profit</div>
-                <div class="text-bold" style="color:var(--accent-purple); font-size:2.5rem; margin-top:8px;" id="dash-profit">₹0</div>
+                <div class="text-sm text-bold" style="font-size:1.05rem;">Estimated Profit</div>
+                <div class="text-bold" style="color:var(--accent-purple); font-size:2.2rem; margin-top:8px;" id="dash-profit">₹0</div>
             </div>
         </div>
         
         <div class="card">
             <h3 class="section-heading">Recent Invoices</h3>
-            <div id="history-list-dash" style="margin-top: 20px;"></div>
-            <button class="btn btn-outline" style="margin-top:20px;" onclick="navTo('screen-projects', document.getElementById('nav-projects')); loadHistory(); setView('history');">View Invoice History</button>
+            <div id="history-list-dash" style="margin-top: 15px;"></div>
+            <button class="btn btn-outline" style="margin-top:15px;" onclick="navTo('screen-projects'); loadHistory(); setView('history');">View Invoice History</button>
         </div>
     </div>
 </div>
 
 <!-- PROJECTS / CALCULATOR SCREEN -->
 <div id="screen-projects" class="screen main-ui">
-    <div style="background: var(--surface); padding: 16px 20px; position: sticky; top: 64px; z-index: 50; border-bottom: 1px solid var(--border); box-shadow: var(--shadow-sm);">
-        <div class="container flex flex-between" style="padding: 0; max-width: 800px; margin: 0 auto;">
+    <div style="background: var(--surface); padding: 12px 16px; position: sticky; top: 64px; z-index: 50; border-bottom: 1px solid var(--border); box-shadow: var(--shadow-sm);">
+        <div class="container flex flex-between" style="padding: 0; margin: 0 auto;">
             <div class="flex gap-10">
                 <button id="btn-view-calc" class="btn btn-sm btn-primary" onclick="setView('calculator')">Current Estimate</button>
                 <button id="btn-view-hist" class="btn btn-sm btn-secondary" onclick="loadHistory(); setView('history')">Invoice History</button>
             </div>
-            <button class="btn btn-sm btn-outline" style="border-style: dashed; padding: 12px 18px;" onclick="resetCalculator()">+ New Invoice</button>
+            <button class="btn btn-sm btn-outline" style="border-style: dashed; padding: 10px 16px;" onclick="startNewInvoice()">+ New Invoice</button>
         </div>
     </div>
 
     <div class="container">
         <div id="view-calculator">
-            
             <div class="card">
                 <div class="flex flex-between">
                     <h3 class="section-heading" style="margin:0;">Client & Site Info</h3>
@@ -415,11 +422,11 @@
             <!-- PAINT ENGINE -->
             <div id="engine-paint">
                 <div id="rooms-container"></div>
-                <button class="btn btn-outline" style="border-style: dashed; margin-bottom: 25px; font-size:1.1rem; padding: 16px;" onclick="addRoom()">+ Add Room</button>
+                <button class="btn btn-outline" style="border-style: dashed; margin-bottom: 24px; font-size:1.1rem; padding: 16px;" onclick="addRoom()">+ Add Room</button>
 
                 <div class="card">
                     <h3 class="section-heading">Paint Rates</h3>
-                    <div class="flex gap-10" style="margin: 20px 0;">
+                    <div class="flex gap-10" style="margin: 16px 0;">
                         <button class="btn btn-sm mode-btn btn-primary" id="mode-rate-btn" onclick="setMode('rate')">Per Sq.Ft</button>
                         <button class="btn btn-sm mode-btn btn-secondary" id="mode-coverage-btn" onclick="setMode('coverage')">Material + Labour</button>
                     </div>
@@ -441,7 +448,7 @@
                     <h3 class="section-heading">Task Measurements</h3>
                     <p class="text-sm">For Plaster, Brickwork, Concrete, Flooring, etc.</p>
                     <div id="civil-tasks-container"></div>
-                    <button class="btn btn-outline" style="border-style: dashed; margin-top: 15px; font-size:1.1rem; padding: 16px;" onclick="addCivilTask()">+ Add Task</button>
+                    <button class="btn btn-outline" style="border-style: dashed; margin-top: 16px; font-size:1.1rem; padding: 16px;" onclick="addCivilTask()">+ Add Task</button>
                 </div>
             </div>
 
@@ -452,16 +459,15 @@
                     <div class="form-group"><label>Days</label><input type="number" id="labour-days" placeholder="5" oninput="calculateTotal()"></div>
                 </div>
                 <div class="form-group"><label>Daily Wage (₹)</label><input type="number" id="labour-wage" placeholder="800" oninput="calculateTotal()"></div>
-                <hr style="border:0; border-top:1.5px solid var(--border); margin:20px 0;">
+                <hr style="border:0; border-top:1.5px solid var(--border); margin:24px 0;">
                 <label>Extra Materials <span id="extra-pro-badge" class="pro-badge" style="display:none;">BASIC</span></label>
                 <div id="extras-container"></div>
-                <button class="btn btn-sm btn-outline" style="margin-top:15px; padding: 14px;" onclick="addExtra()">+ Add Extra Item</button>
+                <button class="btn btn-sm btn-outline" style="margin-top:16px; padding: 14px;" onclick="addExtra()">+ Add Extra Item</button>
             </div>
 
             <div class="card" id="gst-section" style="position: relative;">
-                
                 <div class="flex flex-between">
-                    <div class="flex"><div style="margin-right: 15px; font-weight: 800; font-size:1.15rem;">Tax / GST</div></div>
+                    <div class="flex"><div style="margin-right: 15px; font-weight: 800; font-size:1.1rem;">Tax / GST</div></div>
                     <div class="flex">
                         <label class="switch">
                             <input type="checkbox" id="gst-toggle" onchange="calculateTotal()">
@@ -469,13 +475,13 @@
                         </label>
                         <div style="margin-left: 15px; display: flex; align-items: center;">
                             <span class="text-sm text-bold" style="margin-right: 8px;">%</span>
-                            <input type="number" id="gst-rate" value="18" style="width: 80px; padding: 12px; text-align: center; font-weight:bold;" disabled oninput="calculateTotal()">
+                            <input type="number" id="gst-rate" value="18" style="width: 70px; padding: 12px; text-align: center; font-weight:bold;" disabled oninput="calculateTotal()">
                         </div>
                     </div>
                 </div>
                 
-                <div class="flex flex-between" style="margin-top: 30px;">
-                    <div class="flex"><div style="margin-right: 15px; font-weight: 800; font-size:1.15rem;">Discount</div></div>
+                <div class="flex flex-between" style="margin-top: 24px;">
+                    <div class="flex"><div style="margin-right: 15px; font-weight: 800; font-size:1.1rem;">Discount</div></div>
                     <div class="flex">
                         <label class="switch">
                             <input type="checkbox" id="discount-toggle" onchange="calculateTotal()">
@@ -488,7 +494,7 @@
                     </div>
                 </div>
 
-                <div class="form-group" style="margin-top:30px; padding-top:25px; border-top: 1.5px dashed var(--border);">
+                <div class="form-group" style="margin-top:24px; padding-top:20px; border-top: 1.5px dashed var(--border);">
                     <label style="font-size: 1.05rem;">Invoice Payment Status</label>
                     <select id="inv-payment-status" onchange="calculateTotal()" style="font-weight:bold; font-size:1.1rem; padding:16px;">
                         <option value="Pending">Pending</option>
@@ -504,9 +510,9 @@
             <div class="card" style="border: 2px solid var(--primary); background: var(--surface);">
                 <h3 class="section-heading">Summary</h3>
                 <div id="human-math" class="math-display">No measurements added.</div>
-                <div style="margin-top: 30px; font-size: 1.25rem; display: flex; justify-content: space-between; align-items: flex-end;">
-                    <div><div class="text-sm text-bold" id="disp-unit-label" style="font-size:1rem;">Total Qty/Area</div><div class="text-bold" id="disp-area" style="font-size:1.6rem;">0</div></div>
-                    <div class="text-right"><div class="text-sm text-bold" style="font-size:1rem;">Grand Total</div><div class="text-bold text-primary" style="font-size: 2.5rem;" id="disp-total">₹0</div></div>
+                <div style="margin-top: 24px; font-size: 1.25rem; display: flex; justify-content: space-between; align-items: flex-end;">
+                    <div><div class="text-sm text-bold" id="disp-unit-label" style="font-size:1rem;">Total Qty/Area</div><div class="text-bold" id="disp-area" style="font-size:1.5rem;">0</div></div>
+                    <div class="text-right"><div class="text-sm text-bold" style="font-size:1rem;">Grand Total</div><div class="text-bold text-primary" style="font-size: 2.2rem;" id="disp-total">₹0</div></div>
                 </div>
             </div>
             <div style="height: 60px;"></div>
@@ -519,24 +525,20 @@
             <div id="history-list"></div>
         </div>
     </div>
-    
-    <div class="fab" onclick="generateInvoice()" id="fab-save" title="Generate Invoice">
-        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-    </div>
 </div>
 
-<!-- CRM (Customers) -->
+<!-- CRM (Customer Details) -->
 <div id="screen-crm" class="screen main-ui">
     <div class="container" style="position:relative;">
         <h2 class="section-heading">Customer Details</h2>
-        <div class="card" style="margin-top:20px;">
+        <div class="card" style="margin-top:16px;">
             <div class="grid-2">
                 <div class="form-group"><label>Customer Name</label><input type="text" id="crm-name" placeholder="Name"></div>
                 <div class="form-group"><label>Phone Number</label><input type="tel" id="crm-phone" placeholder="Phone"></div>
             </div>
             <div class="form-group"><label>Site Address</label><input type="text" id="crm-address" placeholder="Site Address"></div>
             <div class="form-group"><label>Notes</label><input type="text" id="crm-notes" placeholder="Notes (Optional)"></div>
-            <button class="btn btn-primary" style="margin-top:15px;" onclick="addEntity('customers')">Save Customer</button>
+            <button class="btn btn-primary" style="margin-top:12px;" onclick="addEntity('customers')">Save Customer</button>
         </div>
         <div class="search-bar"><input type="text" id="search-crm" placeholder="Search customers..." oninput="renderEntityList('customers')"></div>
         <div id="list-customers"></div>
@@ -551,7 +553,7 @@
 <div id="screen-manage" class="screen main-ui">
     <div class="container" style="position:relative;">
         <h2 class="section-heading">Management</h2>
-        <div class="flex gap-10" style="margin-bottom:25px;">
+        <div class="flex gap-10" style="margin-bottom:20px;">
             <button id="btn-tab-workers" class="btn btn-sm btn-primary" onclick="setManageTab('workers')">Workers</button>
             <button id="btn-tab-expenses" class="btn btn-sm btn-secondary" onclick="setManageTab('expenses')">Expenses</button>
             <button id="btn-tab-inventory" class="btn btn-sm btn-secondary" onclick="setManageTab('inventory')">Inventory</button>
@@ -568,7 +570,7 @@
                     <div class="form-group"><label>Phone</label><input type="tel" id="hr-phone" placeholder="Phone"></div>
                     <div class="form-group"><label>Skill</label><input type="text" id="hr-skill" placeholder="e.g. Painter, Mason"></div>
                 </div>
-                <button class="btn btn-primary" style="margin-top:15px;" onclick="addEntity('workers')">Add Worker</button>
+                <button class="btn btn-primary" style="margin-top:12px;" onclick="addEntity('workers')">Add Worker</button>
             </div>
             <div id="list-workers"></div>
         </div>
@@ -589,7 +591,7 @@
                         <option value="Food">Food / Misc</option>
                     </select>
                 </div>
-                <button class="btn btn-primary" style="margin-top:15px;" onclick="addEntity('expenses')">Record Expense</button>
+                <button class="btn btn-primary" style="margin-top:12px;" onclick="addEntity('expenses')">Record Expense</button>
             </div>
             <div id="list-expenses"></div>
         </div>
@@ -602,7 +604,7 @@
                     <div class="form-group"><label>Quantity</label><input type="number" id="inv-qty" placeholder="Amount"></div>
                 </div>
                 <div class="form-group"><label>Unit Type</label><input type="text" id="inv-unit" placeholder="e.g. Litres, Bags, Pcs"></div>
-                <button class="btn btn-primary" style="margin-top:15px;" onclick="addEntity('inventory')">Add to Stock</button>
+                <button class="btn btn-primary" style="margin-top:12px;" onclick="addEntity('inventory')">Add to Stock</button>
             </div>
             <div id="list-inventory"></div>
         </div>
@@ -613,9 +615,15 @@
     </div>
 </div>
 
+<!-- SETTINGS / COMPANY PROFILE -->
 <div id="screen-settings" class="screen main-ui">
     <div class="container">
-        <h2 class="section-heading">Company Profile</h2>
+        <div class="flex flex-between" style="margin-bottom: 20px;">
+            <h2 class="section-heading" style="margin:0;">Company Profile</h2>
+            <div class="theme-toggle-btn" onclick="toggleTheme()" id="theme-btn">
+                <span id="theme-icon">🌙</span> <span id="theme-text">Dark</span>
+            </div>
+        </div>
         <div class="card">
             <div class="form-group"><label>Contractor / Company Name</label><input type="text" id="set-name" placeholder="Royal Construction"></div>
             <div class="form-group"><label>Contractor Name (Personal)</label><input type="text" id="set-contractor-name" placeholder="John Doe"></div>
@@ -625,23 +633,15 @@
             </div>
             <div class="form-group"><label>PAN Number</label><input type="text" id="set-pan" placeholder="ABCDE1234F"></div>
             
-            <h3 class="section-heading" style="margin-top:30px; border-top:1.5px solid var(--border); padding-top:25px;">Bank Details</h3>
+            <h3 class="section-heading" style="margin-top:30px; border-top:1.5px solid var(--border); padding-top:20px;">Bank Details</h3>
             <div class="form-group"><label>Bank Name</label><input type="text" id="set-bank" placeholder="State Bank of India"></div>
             <div class="grid-2">
                 <div class="form-group"><label>Account Number</label><input type="text" id="set-acc" placeholder="1234567890"></div>
                 <div class="form-group"><label>IFSC Code</label><input type="text" id="set-ifsc" placeholder="SBIN0001234"></div>
             </div>
             
-            <h3 class="section-heading" style="margin-top:30px; border-top:1.5px solid var(--border); padding-top:25px;">App Preferences</h3>
-            <div class="flex flex-between" style="margin-bottom:20px;">
-                <label style="margin:0; font-size:1.1rem;">App Theme</label>
-                <div class="theme-toggle-btn" onclick="toggleTheme()" id="theme-btn">
-                    <span id="theme-icon">🌙</span> <span id="theme-text">Dark Mode</span>
-                </div>
-            </div>
-            
-            <div id="pro-settings-wrapper" style="position: relative; margin-top:30px; border-top:1.5px solid var(--border); padding-top:25px;">
-                <h3 class="section-heading" style="margin-bottom:20px;">Branding Assets</h3>
+            <div id="pro-settings-wrapper" style="position: relative; margin-top:30px; border-top:1.5px solid var(--border); padding-top:20px;">
+                <h3 class="section-heading" style="margin-bottom:16px;">Branding Assets</h3>
                 <div class="form-group"><label>Terms & Conditions</label><textarea id="set-terms" rows="3" placeholder="Payment due in 7 days..."></textarea></div>
                 <div class="form-group"><label>Logo Image</label><input type="file" id="set-logo" accept="image/*" style="padding:12px;"><div id="preview-logo" style="margin-top: 15px;"></div></div>
                 <div class="form-group"><label>Payment QR</label><input type="file" id="set-qr" accept="image/*" style="padding:12px;"><div id="preview-qr" style="margin-top: 15px;"></div></div>
@@ -652,7 +652,7 @@
                 </div>
             </div>
 
-            <div class="grid-2" style="margin-top:35px;">
+            <div class="grid-2" style="margin-top:30px;">
                 <button class="btn btn-primary" onclick="saveSettings()">Save Profile</button>
                 <button class="btn btn-secondary" onclick="navTo('screen-dashboard')">Cancel</button>
             </div>
@@ -664,8 +664,8 @@
         
         <div class="card" id="file-manager-section" style="position:relative;">
             <h3 class="section-heading">Project Files & Blueprints</h3>
-            <p class="text-sm" style="margin-bottom:20px;">Upload site photos or documents (Max 2MB). Automatically attached to new invoices.</p>
-            <input type="file" id="file-upload" accept="image/*,application/pdf" style="margin-bottom:20px; padding:12px;">
+            <p class="text-sm" style="margin-bottom:16px;">Upload site photos or documents (Max 2MB). Automatically attached to new invoices.</p>
+            <input type="file" id="file-upload" accept="image/*,application/pdf" style="margin-bottom:16px; padding:12px;">
             <div id="file-list"></div>
 
             <div id="files-lock-overlay" class="locked-overlay" style="display:none;" onclick="openSubscription()">
@@ -677,14 +677,14 @@
 
 <div id="screen-invoice" class="screen">
     <div class="container">
-        <div class="no-print" style="margin-bottom: 25px;">
-            <button class="btn btn-secondary btn-sm" onclick="navTo('screen-projects', document.getElementById('nav-projects')); setView('history');" style="margin-bottom: 15px;">← Back to History</button>
-            <div style="display: flex; gap: 15px; flex-direction: column;">
+        <div class="no-print" style="margin-bottom: 24px;">
+            <button class="btn btn-secondary btn-sm" onclick="navTo('screen-projects', document.getElementById('nav-projects')); setView('history');" style="margin-bottom: 16px;">← Back to History</button>
+            <div style="display: flex; gap: 16px; flex-direction: column;">
                 <button class="btn btn-whatsapp" onclick="shareInvoiceWhatsApp()">Share Invoice (WhatsApp PDF)</button>
                 <button class="btn btn-primary" onclick="downloadPDF()">Print / Save as PDF</button>
             </div>
         </div>
-        <div class="card invoice-preview" id="invoice-content" style="border:1px solid #CCC; box-shadow:none;"></div>
+        <div class="card invoice-preview" id="invoice-content" style="border:1px solid var(--border); box-shadow:none;"></div>
     </div>
 </div>
 
@@ -720,7 +720,8 @@ function initApp() {
 
     try {
         let isDark = localStorage.getItem('os_dark_mode');
-        if(isDark === null) isDark = true; // DEFAULT TO DARK MODE
+        // REQ 12: Dark Mode Default
+        if(isDark === null) isDark = true;
         else isDark = isDark === 'true';
         applyTheme(isDark);
 
@@ -729,6 +730,7 @@ function initApp() {
         loadSettings();
         if(appData.rooms.length === 0) addRoom();
         if(appData.civilTasks.length === 0) addCivilTask();
+        
         document.addEventListener('input', (e) => {
             if(e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') {
                 if(!e.target.id.startsWith('crm-') && !e.target.id.startsWith('hr-') && !e.target.id.startsWith('exp-') && !e.target.id.startsWith('inv-') && !e.target.id.startsWith('search-') && !e.target.id.startsWith('modal-activation-') && !e.target.id.startsWith('login-')) {
@@ -741,17 +743,24 @@ function initApp() {
 }
 
 function loadOSDB() {
-    ['customers', 'workers', 'expenses', 'inventory', 'files', 'customerCounter'].forEach(key => {
-        let data = localStorage.getItem('osdb_' + key);
-        if(data) OS_DB[key] = JSON.parse(data);
-    });
-    if(!OS_DB.customerCounter) {
-        OS_DB.customerCounter = OS_DB.customers.length;
-        OS_DB.customers.forEach((c, idx) => { if(!c.customerNum) c.customerNum = OS_DB.customers.length - idx; });
-        saveOSDB('customers'); saveOSDB('customerCounter');
+    try {
+        ['customers', 'workers', 'expenses', 'inventory', 'files', 'customerCounter'].forEach(key => {
+            let data = localStorage.getItem('osdb_' + key);
+            if(data) OS_DB[key] = JSON.parse(data);
+        });
+        if(!OS_DB.customerCounter) {
+            OS_DB.customerCounter = OS_DB.customers.length;
+            OS_DB.customers.forEach((c, idx) => { if(!c.customerNum) c.customerNum = OS_DB.customers.length - idx; });
+            saveOSDB('customers'); saveOSDB('customerCounter');
+        }
+    } catch (e) {
+        console.error("OSDB Load Error", e);
     }
 }
-function saveOSDB(key) { localStorage.setItem('osdb_' + key, JSON.stringify(OS_DB[key])); }
+function saveOSDB(key) { 
+    try { localStorage.setItem('osdb_' + key, JSON.stringify(OS_DB[key])); }
+    catch(e) { console.error("OSDB Save Error", e); }
+}
 
 // --- AUTH & PLAN SYSTEM ---
 function checkAuth() {
@@ -763,14 +772,14 @@ function checkAuth() {
         if (userPlan === 'expired') {
             userPlan = 'free';
             localStorage.setItem('paintflow_plan', 'free');
-            alert("Your Premium Subscription has expired. You have been moved to the Free plan.");
+            showToast("Subscription Expired. Reverted to Free Plan.", true);
         } else {
             localStorage.setItem('paintflow_plan', userPlan);
         }
         
         invCount = parseInt(localStorage.getItem('paintflow_inv_count') || '0');
         updateUIForPlan();
-        navTo('screen-dashboard', elm('nav-dashboard'));
+        navTo('screen-dashboard');
         refreshDashboard();
     } else {
         navTo('screen-login');
@@ -783,14 +792,10 @@ function checkCodeExpiry(code) {
     if(match) {
         const expMonth = parseInt(match[2], 10);
         const expYear = parseInt("20" + match[3], 10);
-        
         const now = new Date(); 
         const currentMonth = now.getMonth() + 1;
         const currentYear = now.getFullYear();
-        
-        if (expYear < currentYear || (expYear === currentYear && currentMonth > expMonth)) {
-            return 'expired';
-        }
+        if (expYear < currentYear || (expYear === currentYear && currentMonth > expMonth)) return 'expired';
         return match[1] === 'PFP' ? 'premium' : 'basic';
     }
     return 'free';
@@ -828,8 +833,8 @@ function attemptLogin() {
     const phone = val('login-phone');
     const cat = val('login-category');
     
-    if(phone.length < 10) return alert('Enter a valid 10-digit mobile number.');
-    if(!cat) return alert('Please select a Business Type.');
+    if(phone.length < 10) return showToast('Enter a valid 10-digit mobile number.', true);
+    if(!cat) return showToast('Please select a Business Type.', true);
     
     localStorage.setItem('paintflow_user_phone', phone);
     
@@ -851,33 +856,28 @@ function openActivationModal() {
     elm('modal-activation-code').value = '';
     elm('activation-modal').classList.add('active');
 }
-
-function closeActivationModal() {
-    elm('activation-modal').classList.remove('active');
-}
+function closeActivationModal() { elm('activation-modal').classList.remove('active'); }
 
 function verifyActivationCode() {
     const code = val('modal-activation-code').trim().toUpperCase();
     const plan = checkCodeExpiry(code);
     
     if (plan === 'expired') {
-        alert("This Activation Code has expired.");
+        showToast("This Activation Code has expired.", true);
     } else if (plan === 'premium' || plan === 'basic') {
-        alert("✅ Activation Successful! Welcome to PRO " + plan.toUpperCase() + ".");
+        showToast("✅ Activation Successful! Welcome to PRO " + plan.toUpperCase() + ".");
         localStorage.setItem('paintflow_auth', 'active'); 
         localStorage.setItem('paintflow_activation_code', code);
         closeActivationModal();
         checkAuth();
     } else {
-        alert("Invalid Activation Code Format.");
+        showToast("Invalid Activation Code Format.", true);
     }
 }
 
-function openSubscription() {
-    navTo('screen-subscription');
-}
+function openSubscription() { navTo('screen-subscription'); }
 
-// --- SIDE DRAWER NAVIGATION & ROUTING ---
+// --- NAVIGATION & ROUTING ---
 function toggleDrawer() {
     const drawer = elm('side-drawer');
     const overlay = elm('drawer-overlay');
@@ -890,14 +890,11 @@ function closeDrawer() {
     elm('drawer-overlay').classList.remove('active');
 }
 
-function goBack() {
-    navTo(appData.prevScreen || 'screen-dashboard');
-}
+function goBack() { navTo(appData.prevScreen || 'screen-dashboard'); }
 
 function navTo(id, navElem = null) {
-    if(id !== 'screen-subscription' && id !== 'screen-login') {
-        appData.prevScreen = id;
-    }
+    if(id !== 'screen-subscription' && id !== 'screen-login') appData.prevScreen = id;
+    
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     if(elm(id)) elm(id).classList.add('active');
     
@@ -912,7 +909,6 @@ function navTo(id, navElem = null) {
     }
     
     closeDrawer();
-
     if(id === 'screen-dashboard') refreshDashboard();
     if(id === 'screen-crm') renderEntityList('customers');
     window.scrollTo(0,0);
@@ -951,9 +947,11 @@ function applyTheme(isDark) {
     localStorage.setItem('os_dark_mode', isDark);
     const icon = elm('theme-icon'); const txt = elm('theme-text');
     if(icon && txt) {
-        icon.innerText = isDark ? '🌙' : '🌞';
-        txt.innerText = isDark ? 'Dark Mode' : 'Light Mode';
+        icon.innerText = isDark ? '🌙' : '☀️';
+        txt.innerText = isDark ? 'Dark' : 'Light';
     }
+    const meta = elm('meta-theme-color');
+    if(meta) meta.setAttribute('content', isDark ? '#121212' : '#F0F4F8');
 }
 
 // --- CRUD ENGINE ---
@@ -963,7 +961,7 @@ function addEntity(type) {
     let obj = { id: Date.now(), date: new Date().toLocaleDateString() };
     if(type === 'customers') {
         obj.name = val('crm-name'); obj.phone = val('crm-phone'); obj.address = val('crm-address'); obj.notes = val('crm-notes');
-        if(!obj.name) return alert('Name required');
+        if(!obj.name) return showToast('Customer Name required', true);
         
         OS_DB.customerCounter++;
         obj.customerNum = OS_DB.customerCounter;
@@ -972,15 +970,15 @@ function addEntity(type) {
         ['crm-name','crm-phone','crm-address','crm-notes'].forEach(id => setVal(id, ''));
     } else if(type === 'workers') {
         obj.name = val('hr-name'); obj.phone = val('hr-phone'); obj.wage = val('hr-wage'); obj.skill = val('hr-skill');
-        if(!obj.name) return alert('Name required');
+        if(!obj.name) return showToast('Worker Name required', true);
         ['hr-name','hr-phone','hr-wage','hr-skill'].forEach(id => setVal(id, ''));
     } else if(type === 'expenses') {
         obj.desc = val('exp-desc'); obj.amt = val('exp-amt'); obj.cat = val('exp-cat');
-        if(!obj.desc || !obj.amt) return alert('Desc and Amount required');
+        if(!obj.desc || !obj.amt) return showToast('Description and Amount required', true);
         ['exp-desc','exp-amt'].forEach(id => setVal(id, ''));
     } else if(type === 'inventory') {
         obj.name = val('inv-name'); obj.qty = val('inv-qty'); obj.unit = val('inv-unit');
-        if(!obj.name) return alert('Item name required');
+        if(!obj.name) return showToast('Item name required', true);
         ['inv-name','inv-qty','inv-unit'].forEach(id => setVal(id, ''));
     }
     
@@ -1010,9 +1008,9 @@ function renderEntityList(type) {
         let content = '';
         if(type === 'customers') {
             content = `
-            <span class="remove-icon" style="position:absolute; top:15px; right:15px;" onclick="removeEntity('${type}', ${item.id})"></span>
-            <div style="padding-right: 30px;">
-                <div class="list-title" style="font-size:1.3rem; color:var(--primary);">#${item.customerNum}. ${item.name}</div>
+            <div class="del-circle-btn" style="position:absolute; top:16px; right:16px;" onclick="removeEntity('${type}', ${item.id})">✕</div>
+            <div style="padding-right: 32px;">
+                <div class="list-title" style="font-size:1.25rem; color:var(--primary);">Customer ${item.customerNum}: ${item.name}</div>
                 <div class="data-grid">
                     <div><div class="data-label">Phone</div><div class="data-value">${item.phone || '-'}</div></div>
                     <div><div class="data-label">Added On</div><div class="data-value">${item.date}</div></div>
@@ -1022,9 +1020,9 @@ function renderEntityList(type) {
         }
         else if(type === 'inventory') {
             content = `
-            <span class="remove-icon" style="position:absolute; top:15px; right:15px;" onclick="removeEntity('${type}', ${item.id})"></span>
-            <div class="data-grid" style="padding-right: 30px; margin-top:0;">
-                <div><div class="data-label">Material</div><div class="data-value" style="color:var(--primary); font-size:1.3rem;">${item.name}</div></div>
+            <div class="del-circle-btn" style="position:absolute; top:16px; right:16px;" onclick="removeEntity('${type}', ${item.id})">✕</div>
+            <div class="data-grid" style="padding-right: 32px; margin-top:0;">
+                <div><div class="data-label">Material</div><div class="data-value" style="color:var(--primary); font-size:1.2rem;">${item.name}</div></div>
                 <div><div class="data-label">Last Updated</div><div class="data-value">${item.date}</div></div>
                 <div><div class="data-label">Quantity</div><div class="data-value">${item.qty}</div></div>
                 <div><div class="data-label">Unit</div><div class="data-value">${item.unit}</div></div>
@@ -1033,33 +1031,32 @@ function renderEntityList(type) {
         else if(type === 'workers') {
             content = `
             <div class="flex flex-between" style="width:100%">
-                <div><div class="list-title" style="font-size:1.2rem;">${item.name} <span style="font-weight:600; font-size:0.9rem; color:var(--text-light);">(${item.skill})</span></div><div class="text-bold" style="color:var(--success);">Wage: ₹${item.wage}/day</div></div>
-                <span class="remove-icon" onclick="removeEntity('${type}', ${item.id})"></span>
+                <div><div class="list-title" style="font-size:1.15rem;">${item.name} <span style="font-weight:600; font-size:0.9rem; color:var(--text-light);">(${item.skill})</span></div><div class="text-bold" style="color:var(--success);">Wage: ₹${item.wage}/day</div></div>
+                <div class="del-circle-btn" onclick="removeEntity('${type}', ${item.id})">✕</div>
             </div>`;
         }
         else if(type === 'expenses') {
             content = `
             <div class="flex flex-between" style="width:100%">
-                <div><div class="list-title" style="font-size:1.2rem;">${item.desc}</div><div class="text-sm">${item.date} | ${item.cat}</div></div>
-                <div class="flex gap-10"><div class="text-bold text-danger" style="font-size:1.3rem;">₹${item.amt}</div><span class="remove-icon" onclick="removeEntity('${type}', ${item.id})"></span></div>
+                <div><div class="list-title" style="font-size:1.15rem;">${item.desc}</div><div class="text-sm">${item.date} | ${item.cat}</div></div>
+                <div class="flex gap-10"><div class="text-bold text-danger" style="font-size:1.25rem;">₹${item.amt}</div><div class="del-circle-btn" onclick="removeEntity('${type}', ${item.id})">✕</div></div>
             </div>`;
         }
-        
-        d.innerHTML = content;
-        listEl.appendChild(d);
+        d.innerHTML = content; listEl.appendChild(d);
     });
 }
 
 function loadClientFromCRM() {
-    if(userPlan !== 'premium') return alert('Upgrade to Premium to use CRM.');
-    if(OS_DB.customers.length === 0) return alert('No customers in CRM. Add them in Customer Details tab.');
-    let options = OS_DB.customers.map(c => `#${c.customerNum}: ${c.name}`).join('\n');
+    if(userPlan !== 'premium') return showToast('Upgrade to Premium to use CRM.', true);
+    if(OS_DB.customers.length === 0) return showToast('No customers found. Add them in Customer Details tab.', true);
+    let options = OS_DB.customers.map(c => `Customer ${c.customerNum}: ${c.name}`).join('\n');
     let inputStr = prompt("Enter Customer Number (e.g. 1) to load:\n" + options);
     if(inputStr !== null) {
         let match = OS_DB.customers.find(c => c.customerNum == parseInt(inputStr));
         if(match) {
             setVal('client-name', match.name); setVal('client-phone', match.phone); setVal('client-address', match.address);
-        } else { alert("Customer not found."); }
+            showToast("Customer Data Loaded");
+        } else { showToast("Customer not found.", true); }
     }
 }
 
@@ -1072,16 +1069,16 @@ function renderCivilTasks() {
     appData.civilTasks.forEach((t) => {
         const d = create('div'); d.className = 'wall-block';
         d.innerHTML = `
-            <div class="flex flex-between" style="margin-bottom:15px;">
+            <div class="flex flex-between" style="margin-bottom:12px;">
                 <input type="text" class="ct-name" data-id="${t.id}" value="${t.name}" placeholder="Task Name (e.g. Plaster, Floor)" style="width:75%; font-weight:700;">
-                <button class="btn btn-sm btn-danger" style="padding:10px 18px; background: rgba(229, 57, 53, 0.1); color: var(--danger); border: 1px solid var(--danger);" onclick="removeCivilTask(${t.id})">Delete</button>
+                <div class="del-circle-btn" style="width:30px; height:30px; font-size:12px;" onclick="removeCivilTask(${t.id})">✕</div>
             </div>
             <div class="grid-3">
                 <input type="number" class="ct-l" data-id="${t.id}" value="${t.l}" placeholder="L (ft/m)">
                 <input type="number" class="ct-w" data-id="${t.id}" value="${t.w}" placeholder="W (ft/m)">
                 <input type="number" class="ct-d" data-id="${t.id}" value="${t.d}" placeholder="H/D (ft/m)">
             </div>
-            <div class="flex gap-10" style="margin-top:15px;">
+            <div class="flex gap-10" style="margin-top:12px;">
                 <select class="ct-unit" data-id="${t.id}" style="width:40%">
                     <option value="sqft" ${t.unit==='sqft'?'selected':''}>Sq.Ft</option>
                     <option value="cuft" ${t.unit==='cuft'?'selected':''}>Cu.Ft</option>
@@ -1104,8 +1101,7 @@ function addRoom() {
 function removeRoom(rid) { 
     saveInputStates(); 
     appData.rooms = appData.rooms.filter(r => r.id !== rid); 
-    renderRooms(); 
-    calculateTotal(); 
+    renderRooms(); calculateTotal(); 
 }
 function addWall(rid) { appData.rooms.find(r => r.id === rid).walls.push({ id: Date.now(), deductions: [] }); renderRooms(); }
 function removeWall(rid, wid) { saveInputStates(); const r = appData.rooms.find(x => x.id === rid); r.walls = r.walls.filter(w => w.id !== wid); renderRooms(); calculateTotal(); }
@@ -1119,51 +1115,51 @@ function renderRooms() {
         const d = create('div'); d.className = 'card room-block';
         d.innerHTML = `
             <div class="flex flex-between">
-                <input type="text" class="room-name-input" data-rid="${r.id}" placeholder="Room ${rIdx+1}" value="${r.name || ''}" style="width:75%; font-weight:800; font-size:1.2rem; border:none; border-bottom:2px solid var(--border); border-radius:0; background:transparent; padding-left:0;">
-                <button class="btn btn-sm btn-danger" style="padding:10px 18px; background: rgba(229, 57, 53, 0.1); color: var(--danger); border: 1px solid var(--danger);" onclick="removeRoom(${r.id})">Delete</button>
+                <input type="text" class="room-name-input" data-rid="${r.id}" placeholder="Room ${rIdx+1}" value="${r.name || ''}" style="width:75%; font-weight:800; font-size:1.15rem; border:none; border-bottom:2px solid var(--border); border-radius:0; background:transparent; padding-left:0;">
+                <button class="btn btn-sm btn-danger" style="padding:10px 16px;" onclick="removeRoom(${r.id})">Delete Room</button>
             </div>
             <div class="flex gap-10" style="margin-top:20px; padding:15px; background:var(--bg); border-radius:12px; border:1px solid var(--border);">
-                <label class="switch" style="transform:scale(0.95);"><input type="checkbox" class="c-tog" data-rid="${r.id}" ${r.ceiling.active?'checked':''}><span class="slider"></span></label>
-                <span class="text-sm text-bold" style="color:var(--text); font-size:1rem;">Add Ceiling</span>
-                <input type="number" class="c-l" data-rid="${r.id}" placeholder="L" value="${r.ceiling.l||''}" style="display:${r.ceiling.active?'block':'none'}; width:80px; padding:10px; text-align:center;">
-                <input type="number" class="c-w" data-rid="${r.id}" placeholder="W" value="${r.ceiling.w||''}" style="display:${r.ceiling.active?'block':'none'}; width:80px; padding:10px; text-align:center;">
+                <label class="switch" style="transform:scale(0.9);"><input type="checkbox" class="c-tog" data-rid="${r.id}" ${r.ceiling.active?'checked':''}><span class="slider"></span></label>
+                <span class="text-sm text-bold" style="color:var(--text); font-size:0.95rem;">Ceiling</span>
+                <input type="number" class="c-l" data-rid="${r.id}" placeholder="L" value="${r.ceiling.l||''}" style="display:${r.ceiling.active?'block':'none'}; width:75px; padding:10px; text-align:center;">
+                <input type="number" class="c-w" data-rid="${r.id}" placeholder="W" value="${r.ceiling.w||''}" style="display:${r.ceiling.active?'block':'none'}; width:75px; padding:10px; text-align:center;">
             </div>
             <div class="walls-container" id="w-con-${r.id}"></div>
-            <button class="btn btn-sm btn-secondary" style="margin-top:20px; width:100%; font-size:1.05rem;" onclick="addWall(${r.id})">+ Add Wall</button>
+            <button class="btn btn-sm btn-secondary" style="margin-top:20px; width:100%; font-size:1rem;" onclick="addWall(${r.id})">+ Add Wall</button>
         `;
         c.appendChild(d);
         const wCon = d.querySelector('.walls-container');
         r.walls.forEach((w, wIdx) => {
             const wd = create('div'); wd.className = 'wall-block';
             wd.innerHTML = `
-                <div class="flex flex-between" style="margin-bottom:15px; border-bottom: 1.5px solid var(--border); padding-bottom:12px;">
-                    <span class="text-bold" style="font-size:1.15rem; color:var(--accent-purple);">Wall ${wIdx+1}</span>
-                    <div class="flex gap-10">
-                        <span class="remove-icon text-sm text-danger flex" onclick="removeWall(${r.id}, ${w.id})"><span style="margin-right:6px;">✕</span> Delete</span>
-                    </div>
+                <div class="flex flex-between" style="margin-bottom:12px; border-bottom: 1.5px solid var(--border); padding-bottom:12px;">
+                    <span class="text-bold" style="font-size:1.1rem; color:var(--accent-purple);">Wall ${wIdx+1}</span>
+                    <button class="btn btn-sm btn-danger" style="padding:8px 12px; font-size:0.85rem;" onclick="removeWall(${r.id}, ${w.id})">Delete Wall</button>
                 </div>
-                <div style="display:flex; flex-wrap:wrap; gap:16px; margin-bottom:15px; padding: 12px; background: var(--bg); border-radius:12px; border:1px solid var(--border);">
-                    <div class="flex"><label class="switch" style="transform:scale(0.9); margin-right:10px;"><input type="checkbox" class="w-pri" data-rid="${r.id}" data-wid="${w.id}" ${w.primer?'checked':''}><span class="slider"></span></label><span class="text-sm text-bold">Primer</span></div>
-                    <div class="flex"><label class="switch" style="transform:scale(0.9); margin-right:10px;"><input type="checkbox" class="w-put" data-rid="${r.id}" data-wid="${w.id}" ${w.putty?'checked':''}><span class="slider"></span></label><span class="text-sm text-bold">Putty</span></div>
-                    <div class="flex"><label class="switch" style="transform:scale(0.9); margin-right:10px;"><input type="checkbox" class="dc-toggle" data-rid="${r.id}" data-wid="${w.id}" ${w.doubleCoat?'checked':''}><span class="slider"></span></label><span class="text-sm text-bold">Two Coats</span></div>
+                <div style="display:flex; flex-wrap:wrap; gap:16px; margin-bottom:16px; padding: 14px; background: var(--bg); border-radius:12px; border:1px solid var(--border);">
+                    <div class="flex"><label class="switch" style="transform:scale(0.85); margin-right:8px;"><input type="checkbox" class="w-pri" data-rid="${r.id}" data-wid="${w.id}" ${w.primer?'checked':''}><span class="slider"></span></label><span class="text-sm text-bold">Primer</span></div>
+                    <div class="flex"><label class="switch" style="transform:scale(0.85); margin-right:8px;"><input type="checkbox" class="w-put" data-rid="${r.id}" data-wid="${w.id}" ${w.putty?'checked':''}><span class="slider"></span></label><span class="text-sm text-bold">Putty</span></div>
+                    <div class="flex"><label class="switch" style="transform:scale(0.85); margin-right:8px;"><input type="checkbox" class="dc-toggle" data-rid="${r.id}" data-wid="${w.id}" ${w.doubleCoat?'checked':''}><span class="slider"></span></label><span class="text-sm text-bold">Two Coats</span></div>
                 </div>
                 <div class="grid-2">
                     <input type="number" class="w-h" data-rid="${r.id}" data-wid="${w.id}" placeholder="Height (10)" value="${w.h||''}">
                     <input type="number" class="w-l" data-rid="${r.id}" data-wid="${w.id}" placeholder="Length (12)" value="${w.l||''}">
                 </div>
                 <div id="deds-${w.id}" style="margin-top:12px;"></div>
-                <div class="text-right" style="margin-top:15px;"><button class="btn btn-sm btn-outline" style="font-size:0.95rem; padding:10px 16px; border-width:2px;" onclick="addDeduction(${r.id}, ${w.id})">+ Door/Window Deduction</button></div>
+                <div class="text-right" style="margin-top:16px;"><button class="btn btn-sm btn-outline" style="font-size:0.9rem; padding:10px 16px; border-width:2px;" onclick="addDeduction(${r.id}, ${w.id})">+ Door/Window Deduction</button></div>
             `;
             wCon.appendChild(wd);
             const dedCon = wd.querySelector(`#deds-${w.id}`);
             w.deductions.forEach(ded => {
-                const dr = create('div'); dr.className = 'deduction-row';
+                const dr = create('div'); dr.className = 'deduction-row flex-between';
                 dr.innerHTML = `
-                    <span class="text-sm text-bold" style="font-size:0.95rem;">Ded:</span>
-                    <input type="number" class="d-h" data-rid="${r.id}" data-wid="${w.id}" data-did="${ded.id}" placeholder="H" value="${ded.h||''}" style="padding:12px; width:40%;">
-                    <span class="text-sm text-bold">x</span>
-                    <input type="number" class="d-w" data-rid="${r.id}" data-wid="${w.id}" data-did="${ded.id}" placeholder="W" value="${ded.w||''}" style="padding:12px; width:40%;">
-                    <span class="remove-icon" onclick="removeDeduction(${r.id}, ${w.id}, ${ded.id})"></span>
+                    <div class="flex gap-10" style="flex-grow:1;">
+                        <span class="text-sm text-bold" style="font-size:0.9rem;">Ded:</span>
+                        <input type="number" class="d-h" data-rid="${r.id}" data-wid="${w.id}" data-did="${ded.id}" placeholder="H" value="${ded.h||''}" style="padding:10px; width:45%;">
+                        <span class="text-sm text-bold">x</span>
+                        <input type="number" class="d-w" data-rid="${r.id}" data-wid="${w.id}" data-did="${ded.id}" placeholder="W" value="${ded.w||''}" style="padding:10px; width:45%;">
+                    </div>
+                    <div class="del-circle-btn" onclick="removeDeduction(${r.id}, ${w.id}, ${ded.id})">✕</div>
                 `;
                 dedCon.appendChild(dr);
             });
@@ -1172,29 +1168,31 @@ function renderRooms() {
 }
 
 function saveInputStates() {
-    document.querySelectorAll('.ct-name').forEach(i => { const t = appData.civilTasks.find(x=>x.id==i.dataset.id); if(t) t.name = i.value; });
-    document.querySelectorAll('.ct-l').forEach(i => { const t = appData.civilTasks.find(x=>x.id==i.dataset.id); if(t) t.l = i.value; });
-    document.querySelectorAll('.ct-w').forEach(i => { const t = appData.civilTasks.find(x=>x.id==i.dataset.id); if(t) t.w = i.value; });
-    document.querySelectorAll('.ct-d').forEach(i => { const t = appData.civilTasks.find(x=>x.id==i.dataset.id); if(t) t.d = i.value; });
-    document.querySelectorAll('.ct-unit').forEach(i => { const t = appData.civilTasks.find(x=>x.id==i.dataset.id); if(t) t.unit = i.value; });
-    document.querySelectorAll('.ct-rate').forEach(i => { const t = appData.civilTasks.find(x=>x.id==i.dataset.id); if(t) t.rate = i.value; });
-    
-    document.querySelectorAll('.room-name-input').forEach(i => { 
-        const r = appData.rooms.find(x=>x.id==i.dataset.rid); 
-        if(r) r.name = i.value; 
-    });
-    document.querySelectorAll('.c-tog').forEach(i => { const r = appData.rooms.find(x=>x.id==i.dataset.rid); if(r) r.ceiling.active = i.checked; });
-    document.querySelectorAll('.c-l').forEach(i => { const r = appData.rooms.find(x=>x.id==i.dataset.rid); if(r) r.ceiling.l = i.value; });
-    document.querySelectorAll('.c-w').forEach(i => { const r = appData.rooms.find(x=>x.id==i.dataset.rid); if(r) r.ceiling.w = i.value; });
-    
-    document.querySelectorAll('.w-h').forEach(i => { const w = appData.rooms.find(x=>x.id==i.dataset.rid).walls.find(y=>y.id==i.dataset.wid); if(w) w.h = parseFloat(i.value); });
-    document.querySelectorAll('.w-l').forEach(i => { const w = appData.rooms.find(x=>x.id==i.dataset.rid).walls.find(y=>y.id==i.dataset.wid); if(w) w.l = parseFloat(i.value); });
-    document.querySelectorAll('.dc-toggle').forEach(i => { const w = appData.rooms.find(x=>x.id==i.dataset.rid).walls.find(y=>y.id==i.dataset.wid); if(w) w.doubleCoat = i.checked; });
-    document.querySelectorAll('.w-pri').forEach(i => { const w = appData.rooms.find(x=>x.id==i.dataset.rid).walls.find(y=>y.id==i.dataset.wid); if(w) w.primer = i.checked; });
-    document.querySelectorAll('.w-put').forEach(i => { const w = appData.rooms.find(x=>x.id==i.dataset.rid).walls.find(y=>y.id==i.dataset.wid); if(w) w.putty = i.checked; });
-    
-    document.querySelectorAll('.d-h').forEach(i => { const d = appData.rooms.find(x=>x.id==i.dataset.rid).walls.find(y=>y.id==i.dataset.wid).deductions.find(z=>z.id==i.dataset.did); if(d) d.h = parseFloat(i.value); });
-    document.querySelectorAll('.d-w').forEach(i => { const d = appData.rooms.find(x=>x.id==i.dataset.rid).walls.find(y=>y.id==i.dataset.wid).deductions.find(z=>z.id==i.dataset.did); if(d) d.w = parseFloat(i.value); });
+    try {
+        document.querySelectorAll('.ct-name').forEach(i => { const t = appData.civilTasks.find(x=>x.id==i.dataset.id); if(t) t.name = i.value; });
+        document.querySelectorAll('.ct-l').forEach(i => { const t = appData.civilTasks.find(x=>x.id==i.dataset.id); if(t) t.l = i.value; });
+        document.querySelectorAll('.ct-w').forEach(i => { const t = appData.civilTasks.find(x=>x.id==i.dataset.id); if(t) t.w = i.value; });
+        document.querySelectorAll('.ct-d').forEach(i => { const t = appData.civilTasks.find(x=>x.id==i.dataset.id); if(t) t.d = i.value; });
+        document.querySelectorAll('.ct-unit').forEach(i => { const t = appData.civilTasks.find(x=>x.id==i.dataset.id); if(t) t.unit = i.value; });
+        document.querySelectorAll('.ct-rate').forEach(i => { const t = appData.civilTasks.find(x=>x.id==i.dataset.id); if(t) t.rate = i.value; });
+        
+        document.querySelectorAll('.room-name-input').forEach(i => { 
+            const r = appData.rooms.find(x=>x.id==i.dataset.rid); 
+            if(r) r.name = i.value; 
+        });
+        document.querySelectorAll('.c-tog').forEach(i => { const r = appData.rooms.find(x=>x.id==i.dataset.rid); if(r) r.ceiling.active = i.checked; });
+        document.querySelectorAll('.c-l').forEach(i => { const r = appData.rooms.find(x=>x.id==i.dataset.rid); if(r) r.ceiling.l = i.value; });
+        document.querySelectorAll('.c-w').forEach(i => { const r = appData.rooms.find(x=>x.id==i.dataset.rid); if(r) r.ceiling.w = i.value; });
+        
+        document.querySelectorAll('.w-h').forEach(i => { const w = appData.rooms.find(x=>x.id==i.dataset.rid).walls.find(y=>y.id==i.dataset.wid); if(w) w.h = parseFloat(i.value); });
+        document.querySelectorAll('.w-l').forEach(i => { const w = appData.rooms.find(x=>x.id==i.dataset.rid).walls.find(y=>y.id==i.dataset.wid); if(w) w.l = parseFloat(i.value); });
+        document.querySelectorAll('.dc-toggle').forEach(i => { const w = appData.rooms.find(x=>x.id==i.dataset.rid).walls.find(y=>y.id==i.dataset.wid); if(w) w.doubleCoat = i.checked; });
+        document.querySelectorAll('.w-pri').forEach(i => { const w = appData.rooms.find(x=>x.id==i.dataset.rid).walls.find(y=>y.id==i.dataset.wid); if(w) w.primer = i.checked; });
+        document.querySelectorAll('.w-put').forEach(i => { const w = appData.rooms.find(x=>x.id==i.dataset.rid).walls.find(y=>y.id==i.dataset.wid); if(w) w.putty = i.checked; });
+        
+        document.querySelectorAll('.d-h').forEach(i => { const d = appData.rooms.find(x=>x.id==i.dataset.rid).walls.find(y=>y.id==i.dataset.wid).deductions.find(z=>z.id==i.dataset.did); if(d) d.h = parseFloat(i.value); });
+        document.querySelectorAll('.d-w').forEach(i => { const d = appData.rooms.find(x=>x.id==i.dataset.rid).walls.find(y=>y.id==i.dataset.wid).deductions.find(z=>z.id==i.dataset.did); if(d) d.w = parseFloat(i.value); });
+    } catch(e){}
 }
 
 function addExtra() { 
@@ -1204,8 +1202,13 @@ function addExtra() {
 function renderExtras() {
     const c = elm('extras-container'); c.innerHTML = '';
     appData.extras.forEach((e, idx) => {
-        const d = create('div'); d.className = 'grid-2'; d.style.marginBottom='15px';
-        d.innerHTML = `<input type="text" placeholder="Item Name" value="${e.name}" oninput="appData.extras[${idx}].name=this.value"><div class="flex"><input type="number" placeholder="Cost" value="${e.cost}" oninput="appData.extras[${idx}].cost=this.value; calculateTotal()"><span class="remove-icon" onclick="appData.extras.splice(${idx},1); renderExtras(); calculateTotal()"></span></div>`;
+        const d = create('div'); d.className = 'grid-2 flex-between'; d.style.marginBottom='12px'; d.style.gap='10px';
+        d.innerHTML = `
+            <input type="text" placeholder="Item Name" value="${e.name}" oninput="appData.extras[${idx}].name=this.value" style="width:100%">
+            <div class="flex gap-10">
+                <input type="number" placeholder="Cost" value="${e.cost}" oninput="appData.extras[${idx}].cost=this.value; calculateTotal()" style="width:100%">
+                <div class="del-circle-btn" onclick="appData.extras.splice(${idx},1); renderExtras(); calculateTotal()">✕</div>
+            </div>`;
         c.appendChild(d);
     });
 }
@@ -1218,7 +1221,8 @@ function setMode(m) {
     calculateTotal();
 }
 
-function resetCalculator() {
+function startNewInvoice() {
+    if(!confirm("Start fresh new estimate? Unsaved data will be cleared.")) return;
     appData = { rooms: [], civilTasks: [], extras: [], mode: 'rate', engine: appData.engine, breakdown: null, editingInvoiceId: null };
     elm('rooms-container').innerHTML = ''; elm('civil-tasks-container').innerHTML = ''; elm('extras-container').innerHTML = '';
     
@@ -1229,77 +1233,80 @@ function resetCalculator() {
     if(elm('inv-payment-status')) elm('inv-payment-status').value = 'Pending';
     
     addRoom(); addCivilTask(); calculateTotal();
+    showToast("✅ Ready for new estimate");
 }
 
 function calculateTotal() {
     saveInputStates();
     let totalQty = 0, math = '', taskCost = 0, calcTxt = '';
     
-    if(appData.engine === 'paint') {
-        elm('disp-unit-label').innerText = "Total Area (sq.ft)";
-        appData.rooms.forEach((r, rIdx) => {
-            let ra = 0; math += `<b>${r.name||'Room '+(rIdx+1)}:</b>\n`;
-            if(r.ceiling.active) {
-                let cl = parseFloat(r.ceiling.l)||0, cw = parseFloat(r.ceiling.w)||0;
-                let ca = cl*cw; ra += ca; math += ` Ceil: ${cl}x${cw}=${ca} sqft\n`;
-            }
-            r.walls.forEach((w, i) => {
-                const h = parseFloat(w.h)||0, l = parseFloat(w.l)||0;
-                const gross = h*l; let ded = 0;
-                w.deductions.forEach(d => ded += (parseFloat(d.h)||0)*(parseFloat(d.w)||0));
-                let net = gross - ded; if(net<0) net=0;
-                if(w.doubleCoat) net *= 2;
-                math += ` W${i+1}: ${h}x${l}=${gross} - Ded:${ded} = ${net} ${w.doubleCoat?'(2x)':''}`;
-                if(w.primer) math += ' +Pri'; if(w.putty) math += ' +Put'; math += '\n';
-                ra += net;
+    try {
+        if(appData.engine === 'paint') {
+            elm('disp-unit-label').innerText = "Total Area (sq.ft)";
+            appData.rooms.forEach((r, rIdx) => {
+                let ra = 0; math += `<b>${r.name||'Room '+(rIdx+1)}:</b>\n`;
+                if(r.ceiling.active) {
+                    let cl = parseFloat(r.ceiling.l)||0, cw = parseFloat(r.ceiling.w)||0;
+                    let ca = cl*cw; ra += ca; math += ` Ceil: ${cl}x${cw}=${ca} sqft\n`;
+                }
+                r.walls.forEach((w, i) => {
+                    const h = parseFloat(w.h)||0, l = parseFloat(w.l)||0;
+                    const gross = h*l; let ded = 0;
+                    w.deductions.forEach(d => ded += (parseFloat(d.h)||0)*(parseFloat(d.w)||0));
+                    let net = gross - ded; if(net<0) net=0;
+                    if(w.doubleCoat) net *= 2;
+                    math += ` W${i+1}: ${h}x${l}=${gross} - Ded:${ded} = ${net} ${w.doubleCoat?'(Two Coats)':''}`;
+                    if(w.primer) math += ' +Primer'; if(w.putty) math += ' +Putty'; math += '\n';
+                    ra += net;
+                });
+                totalQty += ra; math += ` Sub: ${ra} sq.ft\n`;
             });
-            totalQty += ra; math += ` Sub: ${ra} sq.ft\n`;
-        });
-        
-        if(appData.mode === 'rate') {
-            const rate = parseFloat(val('rate-sqft'))||0; taskCost = totalQty * rate; calcTxt = `Paint (${totalQty} sq.ft x ₹${rate})`;
+            
+            if(appData.mode === 'rate') {
+                const rate = parseFloat(val('rate-sqft'))||0; taskCost = totalQty * rate; calcTxt = `Paint (${totalQty} sq.ft x ₹${rate})`;
+            } else {
+                const cov = parseFloat(val('paint-coverage'))||1, pr = parseFloat(val('paint-price'))||0;
+                const l = Math.ceil(totalQty/cov); taskCost = l * pr; calcTxt = `Paint (${l}L x ₹${pr})`;
+            }
+            elm('disp-area').innerText = totalQty + ' sq.ft';
         } else {
-            const cov = parseFloat(val('paint-coverage'))||1, pr = parseFloat(val('paint-price'))||0;
-            const l = Math.ceil(totalQty/cov); taskCost = l * pr; calcTxt = `Paint (${l}L x ₹${pr})`;
+            elm('disp-unit-label').innerText = "Total Tasks";
+            let taskCount = 0;
+            appData.civilTasks.forEach(t => {
+                let l = parseFloat(t.l)||1, w = parseFloat(t.w)||1, d = parseFloat(t.d)||1, rate = parseFloat(t.rate)||0;
+                let qty = l * w; if(t.d) qty = qty * d;
+                if(t.unit === 'pcs') qty = l;
+                let cost = qty * rate; taskCost += cost; taskCount++;
+                math += `<b>${t.name||'Task'}:</b> Qty: ${qty.toFixed(2)} ${t.unit} @ ₹${rate} = ₹${cost.toFixed(2)}\n`;
+            });
+            calcTxt = `Civil/Gen Tasks`; elm('disp-area').innerText = taskCount + ' Tasks';
         }
-        elm('disp-area').innerText = totalQty + ' sq.ft';
-    } else {
-        elm('disp-unit-label').innerText = "Total Tasks";
-        let taskCount = 0;
-        appData.civilTasks.forEach(t => {
-            let l = parseFloat(t.l)||1, w = parseFloat(t.w)||1, d = parseFloat(t.d)||1, rate = parseFloat(t.rate)||0;
-            let qty = l * w; if(t.d) qty = qty * d;
-            if(t.unit === 'pcs') qty = l;
-            let cost = qty * rate; taskCost += cost; taskCount++;
-            math += `<b>${t.name||'Task'}:</b> Qty: ${qty.toFixed(2)} ${t.unit} @ ₹${rate} = ₹${cost.toFixed(2)}\n`;
-        });
-        calcTxt = `Civil/Gen Tasks`; elm('disp-area').innerText = taskCount + ' Tasks';
-    }
 
-    elm('human-math').innerHTML = math || 'No measurements added...';
+        elm('human-math').innerHTML = math || 'No measurements added...';
 
-    const labCost = (parseFloat(val('labour-count'))||0) * (parseFloat(val('labour-days'))||0) * (parseFloat(val('labour-wage'))||0);
-    let exCost = 0; appData.extras.forEach(e => exCost += (parseFloat(e.cost)||0));
-    
-    let discount = 0, discOn = false;
-    if(elm('discount-toggle')) {
-        discOn = elm('discount-toggle').checked;
-        elm('inv-discount').disabled = !discOn;
-        if(discOn) discount = parseFloat(val('inv-discount'))||0;
-    }
-    
-    let sub = taskCost + labCost + exCost - discount;
-    let gstAmt = 0, gstRate = 0, gstOn = false;
-    
-    if(userPlan === 'basic' || userPlan === 'premium') {
-        gstOn = elm('gst-toggle').checked; elm('gst-rate').disabled = !gstOn;
-        if(gstOn) { gstRate = parseFloat(val('gst-rate'))||0; gstAmt = sub * gstRate / 100; }
-    } else { if(elm('gst-toggle').checked) elm('gst-toggle').checked = false; }
-    
-    const total = sub + gstAmt;
-    elm('disp-total').innerText = '₹' + total.toFixed(2);
-    
-    appData.breakdown = { area: totalQty, taskCost, labCost, exCost, discount, discOn, sub, gstAmt, total, gstOn, gstRate, calcTxt, w: val('labour-count'), d: val('labour-days'), wg: val('labour-wage') };
+        const labCost = (parseFloat(val('labour-count'))||0) * (parseFloat(val('labour-days'))||0) * (parseFloat(val('labour-wage'))||0);
+        let exCost = 0; appData.extras.forEach(e => exCost += (parseFloat(e.cost)||0));
+        
+        let discount = 0, discOn = false;
+        if(elm('discount-toggle')) {
+            discOn = elm('discount-toggle').checked;
+            elm('inv-discount').disabled = !discOn;
+            if(discOn) discount = parseFloat(val('inv-discount'))||0;
+        }
+        
+        let sub = taskCost + labCost + exCost - discount;
+        let gstAmt = 0, gstRate = 0, gstOn = false;
+        
+        if(userPlan === 'basic' || userPlan === 'premium') {
+            gstOn = elm('gst-toggle').checked; elm('gst-rate').disabled = !gstOn;
+            if(gstOn) { gstRate = parseFloat(val('gst-rate'))||0; gstAmt = sub * gstRate / 100; }
+        } else { if(elm('gst-toggle').checked) elm('gst-toggle').checked = false; }
+        
+        const total = sub + gstAmt;
+        elm('disp-total').innerText = '₹' + total.toFixed(2);
+        
+        appData.breakdown = { area: totalQty, taskCost, labCost, exCost, discount, discOn, sub, gstAmt, total, gstOn, gstRate, calcTxt, w: val('labour-count'), d: val('labour-days'), wg: val('labour-wage') };
+    } catch(e){ console.log(e); }
 }
 
 function generateInvoice() {
@@ -1307,6 +1314,7 @@ function generateInvoice() {
 
     calculateTotal();
     
+    // REQ 2 & 5: Proper Non-Destructive Editing
     const recId = appData.editingInvoiceId || Date.now();
     const isNew = !appData.editingInvoiceId;
 
@@ -1347,6 +1355,7 @@ function generateInvoice() {
     appData.editingInvoiceId = null; // Clear edit state
     
     renderInvoiceHTML(rec); navTo('screen-invoice');
+    showToast("✅ Invoice Generated");
 }
 
 function renderInvoiceHTML(rec) {
@@ -1378,6 +1387,7 @@ function renderInvoiceHTML(rec) {
         if(s.terms) terms = `<div class="text-sm" style="margin-top:30px; font-size:0.85rem; color:#555;"><strong>Terms & Conditions:</strong><br>${s.terms.replace(/\n/g, '<br>')}</div>`;
     }
 
+    // Payment Status Display Block
     let pStatus = rec.paymentStatus || 'Pending';
     if(pStatus === 'Paid') {
         paymentStatusHtml = `<div style="margin-top:20px; border-top:1.5px solid #E0E6ED; padding-top:15px;"><div style="font-weight:800; color:#5F6368; margin-bottom:5px; font-size:1rem;">Payment Status</div><div style="color:#43A047; font-weight:900; font-size:1.3rem; text-transform:uppercase;">Paid</div></div>`;
@@ -1491,7 +1501,7 @@ function editInvoice(i) {
     let h = JSON.parse(localStorage.getItem('paintflow_history') || '[]');
     let rec = h[i];
 
-    appData.editingInvoiceId = rec.id;
+    appData.editingInvoiceId = rec.id; // Retain ID for Non-Destructive Edit
 
     appData.rooms = JSON.parse(JSON.stringify(rec.rooms || []));
     appData.civilTasks = JSON.parse(JSON.stringify(rec.civilTasks || []));
@@ -1523,6 +1533,7 @@ function editInvoice(i) {
     
     navTo('screen-projects', elm('nav-projects')); 
     setView('calculator');
+    showToast("✏️ Invoice Loaded for Editing");
 }
 
 function openHistory(i) { 
@@ -1533,7 +1544,7 @@ function handleFileUpload(e) {
     if(userPlan !== 'premium') return;
     const file = e.target.files[0];
     if(!file) return;
-    if(file.size > 2000000) return alert("File too large. Max 2MB to prevent browser storage crash.");
+    if(file.size > 2000000) return showToast("File too large. Max 2MB to prevent browser storage crash.", true);
     
     const reader = new FileReader();
     reader.onload = function(ev) {
@@ -1572,16 +1583,24 @@ function saveSettings() {
 }
 
 function loadSettings() {
-    const s = JSON.parse(localStorage.getItem('paintflow_settings'));
-    if(s) { 
-        setVal('set-name', s.name); setVal('set-contractor-name', s.contractorName); setVal('set-phone', s.phone); setVal('set-gst', s.gst); setVal('set-pan', s.pan);
-        setVal('set-bank', s.bank); setVal('set-acc', s.acc); setVal('set-ifsc', s.ifsc); setVal('set-terms', s.terms);
-        if(s.logo) elm('preview-logo').innerHTML = s.logo; if(s.qr) elm('preview-qr').innerHTML = s.qr; if(s.sign) elm('preview-sign').innerHTML = s.sign;
-    }
-    renderFiles();
+    try {
+        const s = JSON.parse(localStorage.getItem('paintflow_settings'));
+        if(s) { 
+            setVal('set-name', s.name); setVal('set-contractor-name', s.contractorName); setVal('set-phone', s.phone); setVal('set-gst', s.gst); setVal('set-pan', s.pan);
+            setVal('set-bank', s.bank); setVal('set-acc', s.acc); setVal('set-ifsc', s.ifsc); setVal('set-terms', s.terms);
+            if(s.logo) elm('preview-logo').innerHTML = s.logo; if(s.qr) elm('preview-qr').innerHTML = s.qr; if(s.sign) elm('preview-sign').innerHTML = s.sign;
+        }
+        renderFiles();
+    } catch(e) {}
 }
 
-function showToast(msg = "Saved") { const t = elm('toast'); t.innerText = msg; t.style.opacity=1; setTimeout(()=>t.style.opacity=0, 2500); }
+function showToast(msg, isError = false) { 
+    const t = elm('toast'); 
+    t.innerText = msg; 
+    t.style.background = isError ? "var(--danger)" : "#323232";
+    t.classList.add('show'); 
+    setTimeout(()=> t.classList.remove('show'), 2500); 
+}
 function factoryReset() { if(confirm('Erase ALL DATA? Cannot be undone.')) { localStorage.clear(); location.reload(); } }
 
 ['set-logo','set-qr','set-sign'].forEach(id => {
@@ -1616,7 +1635,7 @@ async function shareInvoiceWhatsApp() {
             }
             if (overlay) overlay.style.display = 'none';
         }
-    } catch (e) { console.error(e); alert("Error generating PDF"); if (overlay) overlay.style.display = 'none'; }
+    } catch (e) { console.error(e); showToast("Error generating PDF", true); if (overlay) overlay.style.display = 'none'; }
 }
 
 function downloadPDF() {
