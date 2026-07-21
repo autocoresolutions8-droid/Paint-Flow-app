@@ -13,7 +13,7 @@
         :root {
             --primary: #FF5722; 
             --primary-dark: #E64A19;
-            --secondary: #455A64; /* Dark Slate */
+            --secondary: #455A64; 
             --bg: #F0F4F8;
             --surface: #FFFFFF;
             --border: #CFD8DC;
@@ -39,7 +39,7 @@
             --shadow-lg: 0 16px 32px rgba(0,0,0,0.12);
         }
 
-        /* MOBILE FIRST SCALING (Req 23) */
+        /* MOBILE FIRST SCALING */
         @media (max-width: 768px) {
             :root {
                 --radius-card: 12px;
@@ -100,8 +100,13 @@
         input:checked + .slider { background-color: var(--primary); }
         input:checked + .slider:before { transform: translateX(22px); }
 
+        /* THEME TOGGLE BUTTON */
+        .theme-toggle-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 18px; background: var(--bg); border: 1.5px solid var(--border); border-radius: 30px; cursor: pointer; font-weight: 700; font-size: 0.95rem; color: var(--text); transition: all 0.2s; }
+        .theme-toggle-btn:active { transform: scale(0.95); }
+        .theme-toggle-btn svg { width: 18px; height: 18px; }
+
         /* BUTTONS */
-        .btn { display: inline-flex; justify-content: center; align-items: center; padding: var(--padding-input) 20px; border-radius: var(--radius-btn); font-weight: 700; cursor: pointer; border: none; transition: all 0.2s ease; font-size: 1.05rem; width: 100%; box-shadow: var(--shadow-sm); }
+        .btn { display: inline-flex; justify-content: center; align-items: center; padding: var(--padding-input) 20px; border-radius: var(--radius-btn); font-weight: 700; cursor: pointer; border: none; transition: all 0.2s ease; font-size: 1.05rem; width: 100%; box-shadow: var(--shadow-sm); gap: 8px; }
         .btn:active { transform: scale(0.97); }
         .btn-primary { background: var(--primary); color: white; }
         .btn-primary:hover { background: var(--primary-dark); box-shadow: var(--shadow-md); }
@@ -113,9 +118,11 @@
         .btn-gold { background: linear-gradient(135deg, #FFD54F, #FF9800); color: #111; }
         .btn-sm { padding: 10px 16px; font-size: 0.95rem; width: auto; }
 
-        /* CIRCULAR DELETE BUTTON (Req 24) */
-        .del-circle-btn { background: var(--danger); color: white; width: 26px; height: 26px; border-radius: 50%; display: inline-flex; justify-content: center; align-items: center; cursor: pointer; font-size: 11px; flex-shrink: 0; box-shadow: 0 2px 6px rgba(229, 57, 53, 0.4); transition: transform 0.2s; user-select: none; }
+        /* ICONS */
+        .svg-icon { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+        .del-circle-btn { background: var(--danger); color: white; width: 30px; height: 30px; border-radius: 50%; display: inline-flex; justify-content: center; align-items: center; cursor: pointer; flex-shrink: 0; box-shadow: 0 2px 6px rgba(229, 57, 53, 0.4); transition: transform 0.2s; }
         .del-circle-btn:active { transform: scale(0.85); }
+        .del-circle-btn svg { width: 16px; height: 16px; stroke-width: 3; }
 
         /* BADGES & LOCKS */
         .pro-badge { background: var(--gold); color: black; padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: 800; margin-left: 8px; }
@@ -124,7 +131,7 @@
         .locked-overlay:hover { background: rgba(255,255,255,0.3); }
         body.dark-mode .locked-overlay { background: rgba(0,0,0,0.3); }
         body.dark-mode .locked-overlay:hover { background: rgba(0,0,0,0.5); }
-        .lock-icon-ui { font-size: 3rem; text-shadow: 0px 4px 12px rgba(0,0,0,0.4); margin-bottom: 10px; }
+        .lock-icon-ui svg { width: 48px; height: 48px; filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.4)); margin-bottom: 10px; }
 
         /* SUBSCRIPTION CARDS */
         .sub-card { background: var(--surface); color: var(--text); border-radius: 20px; padding: 24px; display: flex; flex-direction: column; position: relative; border: 1px solid var(--border); box-shadow: var(--shadow-md); margin-bottom: 24px;}
@@ -136,8 +143,8 @@
         .sub-price span { font-size: 1.1rem; font-weight: 600; color: var(--text-light); }
         .sub-list { list-style: none; padding: 0; margin: 0 0 25px 0; }
         .sub-list li { margin-bottom: 14px; display: flex; align-items: center; font-size: 1rem; font-weight: 600;}
-        .sub-list .check { color: var(--success); margin-right: 12px; font-size: 1.3rem; font-weight: bold;}
-        .sub-list .cross { color: var(--danger); margin-right: 12px; font-size: 1.3rem; font-weight: bold;}
+        .sub-list .check { color: var(--success); margin-right: 12px; }
+        .sub-list .cross { color: var(--danger); margin-right: 12px; }
 
         /* TOAST & MODALS */
         .toast { position: fixed; top: 20px; left: 50%; transform: translate(-50%, -20px); background: #323232; color: white; padding: 16px 24px; border-radius: 12px; opacity: 0; pointer-events: none; transition: opacity 0.3s, transform 0.3s; z-index: 9999; box-shadow: var(--shadow-lg); font-weight: 700; text-align: center; min-width: 280px; font-size: 1.05rem; }
@@ -153,9 +160,26 @@
         .wall-block { background: var(--bg); padding: 16px; border-radius: 12px; margin-top: 15px; border: 1px solid var(--border); }
         .math-display { font-family: monospace; background: rgba(255, 193, 7, 0.08); color: var(--text); padding: 20px; border-radius: 12px; font-size: 1rem; white-space: pre-wrap; line-height: 1.6; border: 1.5px dashed var(--warning); }
         
+        /* FAB */
+        .fab { position: fixed; bottom: 35px; right: 25px; width: 68px; height: 68px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 24px rgba(255, 87, 34, 0.45); z-index: 100; cursor: pointer; transition: transform 0.2s, background 0.2s; }
+        .fab:hover { background: var(--primary-dark); }
+        .fab:active { transform: scale(0.9); }
+        .fab svg { width: 32px; height: 32px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+
+        /* IMAGE PREVIEWS (Fix Zoom Bug) */
+        .preview-box { margin-top: 15px; text-align: center; }
+        .preview-box img { max-width: 100%; max-height: 120px; object-fit: contain; border-radius: 8px; border: 1px solid var(--border); background: var(--bg); padding: 5px; }
+
+        /* INVOICE PREVIEW */
+        .invoice-preview { background: white; color: black; padding: 0; }
+        .invoice-header { display: flex; justify-content: space-between; margin-bottom: 25px; border-bottom: 2px solid var(--primary); padding-bottom: 20px; }
+        .logo-img { max-height: 90px; max-width: 180px; object-fit: contain; }
+        .qr-img { width: 130px; height: 130px; object-fit: contain; border: 1px solid #EEE; padding: 5px; background: white; border-radius: 8px; }
+        .sign-img { max-height: 80px; max-width: 200px; object-fit: contain; }
+        
         /* SIDE DRAWER NAVIGATION */
         .top-app-bar { position: fixed; top: 0; left: 0; right: 0; height: 64px; background: var(--surface); box-shadow: var(--shadow-sm); z-index: 900; display: flex; align-items: center; padding: 0 16px; border-bottom: 1px solid var(--border); display: none; }
-        .hamburger { font-size: 1.8rem; color: var(--text); cursor: pointer; margin-right: 16px; padding: 5px; }
+        .hamburger { color: var(--text); cursor: pointer; margin-right: 16px; padding: 5px; display: flex; align-items: center; justify-content: center; }
         .app-title { font-size: 1.4rem; font-weight: 800; color: var(--primary); font-style: italic; }
         
         .drawer-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
@@ -166,7 +190,7 @@
         .drawer-item { padding: 18px 24px; display: flex; align-items: center; font-size: 1.1rem; font-weight: 700; color: var(--text); border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.2s; }
         .drawer-item:active { background: var(--bg); }
         .drawer-item.active { color: var(--primary); background: rgba(255, 87, 34, 0.08); border-left: 5px solid var(--primary); }
-        .drawer-icon { font-size: 1.4rem; margin-right: 16px; width: 26px; text-align: center; }
+        .drawer-icon { margin-right: 16px; display: flex; align-items: center; justify-content: center; }
 
         /* LISTS & DASHBOARD */
         .stat-card { text-align: center; padding: 20px; border-radius: 16px; background: var(--surface); border: 1px solid var(--border); box-shadow: var(--shadow-sm); }
@@ -200,9 +224,28 @@
 </head>
 <body>
 
+<!-- SVG ICON LIBRARY (Hidden) -->
+<svg style="display: none;">
+    <symbol id="icon-dash" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></symbol>
+    <symbol id="icon-calc" viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="16" y1="14" x2="16" y2="14"/><line x1="8" y1="14" x2="8" y2="14"/><line x1="12" y1="14" x2="12" y2="14"/><line x1="8" y1="18" x2="8" y2="18"/><line x1="12" y1="18" x2="12" y2="18"/><line x1="16" y1="18" x2="16" y2="18"/></symbol>
+    <symbol id="icon-users" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+    <symbol id="icon-briefcase" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></symbol>
+    <symbol id="icon-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></symbol>
+    <symbol id="icon-menu" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></symbol>
+    <symbol id="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></symbol>
+    <symbol id="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></symbol>
+    <symbol id="icon-edit" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></symbol>
+    <symbol id="icon-trash" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></symbol>
+    <symbol id="icon-x" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></symbol>
+    <symbol id="icon-file" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></symbol>
+    <symbol id="icon-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></symbol>
+    <symbol id="icon-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></symbol>
+    <symbol id="icon-lock" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+</svg>
+
 <div id="toast" class="toast"></div>
 
-<div id="loading-overlay" style="display:none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); z-index: 5000; align-items: center; justify-content: center; color: white; flex-direction: column;">
+<div id="loading-overlay" style="display:none;">
     <div style="color:white; margin-bottom:20px; font-weight:800; font-size:1.3rem;">Processing...</div>
     <div style="width: 50px; height: 50px; border: 5px solid #FFF; border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite;"></div>
     <style>@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }</style>
@@ -210,7 +253,7 @@
 
 <!-- TOP APP BAR -->
 <div class="top-app-bar" id="main-header">
-    <div class="hamburger" onclick="toggleDrawer()">☰</div>
+    <div class="hamburger" onclick="toggleDrawer()"><svg class="svg-icon"><use href="#icon-menu"></use></svg></div>
     <div class="app-title">PaintFlow OS</div>
 </div>
 
@@ -219,19 +262,19 @@
 <div class="side-drawer" id="side-drawer">
     <div class="drawer-header">PaintFlow OS</div>
     <div class="drawer-item active" onclick="navTo('screen-dashboard', this)">
-        <span class="drawer-icon">📊</span> Dashboard
+        <div class="drawer-icon"><svg class="svg-icon"><use href="#icon-dash"></use></svg></div> Dashboard
     </div>
     <div class="drawer-item" onclick="navTo('screen-projects', this)">
-        <span class="drawer-icon">🧮</span> Calculator
+        <div class="drawer-icon"><svg class="svg-icon"><use href="#icon-calc"></use></svg></div> Calculator
     </div>
     <div class="drawer-item" onclick="navTo('screen-crm', this)">
-        <span class="drawer-icon">👥</span> Customer Details
+        <div class="drawer-icon"><svg class="svg-icon"><use href="#icon-users"></use></svg></div> Customer Details
     </div>
     <div class="drawer-item" onclick="navTo('screen-manage', this)">
-        <span class="drawer-icon">💼</span> Management
+        <div class="drawer-icon"><svg class="svg-icon"><use href="#icon-briefcase"></use></svg></div> Management
     </div>
     <div class="drawer-item" onclick="navTo('screen-settings', this)">
-        <span class="drawer-icon">⚙️</span> Company Profile
+        <div class="drawer-icon"><svg class="svg-icon"><use href="#icon-settings"></use></svg></div> Company Profile
     </div>
 </div>
 
@@ -271,13 +314,13 @@
 <!-- SUBSCRIPTION SCREEN -->
 <div id="screen-subscription" class="screen">
     <div class="container">
-        <!-- Back Button Added -->
+        <!-- Back Button -->
         <div style="margin-bottom: 20px;">
             <button class="btn btn-sm btn-secondary" onclick="goBack()" style="background: transparent; color: var(--text); border: 2px solid var(--border); width: auto; font-weight:800;">← Back</button>
         </div>
 
         <div class="text-center" style="margin-bottom: 30px;">
-            <h1 class="text-primary" style="font-style:italic; font-weight:900; font-size:2rem;">👑 Subscription Plans</h1>
+            <h1 class="text-primary" style="font-style:italic; font-weight:900; font-size:2rem;">Subscription Plans</h1>
             <p class="text-sm" style="font-size:1.05rem; margin-top:8px; font-weight:600;">Choose the best subscription for your business.</p>
         </div>
 
@@ -285,13 +328,13 @@
             <div class="sub-title">Free Plan</div>
             <div class="sub-price">₹0<span> / mo</span></div>
             <ul class="sub-list">
-                <li><span class="check">✔</span> Limited Calculator</li>
-                <li><span class="check">✔</span> Limited Estimates</li>
-                <li><span class="check">✔</span> Limited Invoices</li>
-                <li><span class="cross">✕</span> Client Management</li>
-                <li><span class="cross">✕</span> Worker Management</li>
-                <li><span class="cross">✕</span> Inventory & Expenses</li>
-                <li><span class="cross">✕</span> Project Files & Blueprints</li>
+                <li><span class="check"><svg class="svg-icon"><use href="#icon-check"></use></svg></span> Limited Calculator</li>
+                <li><span class="check"><svg class="svg-icon"><use href="#icon-check"></use></svg></span> Limited Estimates</li>
+                <li><span class="check"><svg class="svg-icon"><use href="#icon-check"></use></svg></span> Limited Invoices</li>
+                <li><span class="cross"><svg class="svg-icon"><use href="#icon-x"></use></svg></span> Client Management</li>
+                <li><span class="cross"><svg class="svg-icon"><use href="#icon-x"></use></svg></span> Worker Management</li>
+                <li><span class="cross"><svg class="svg-icon"><use href="#icon-x"></use></svg></span> Inventory & Expenses</li>
+                <li><span class="cross"><svg class="svg-icon"><use href="#icon-x"></use></svg></span> Project Files & Blueprints</li>
             </ul>
             <button class="btn btn-outline" style="background:var(--bg);" onclick="startFreeMode()">Continue Free</button>
         </div>
@@ -300,14 +343,14 @@
             <div class="sub-title" style="color:#FF9800;">PRO BASIC</div>
             <div class="sub-price">₹99<span> / mo</span></div>
             <ul class="sub-list">
-                <li><span class="check">✔</span> Unlimited Calculators</li>
-                <li><span class="check">✔</span> Unlimited Estimates</li>
-                <li><span class="check">✔</span> Unlimited Invoices</li>
-                <li><span class="check">✔</span> Company Logo & QR</li>
-                <li><span class="check">✔</span> PDF & WhatsApp Share</li>
-                <li><span class="cross">✕</span> Client Management</li>
-                <li><span class="cross">✕</span> HR, Inventory & Expenses</li>
-                <li><span class="cross">✕</span> Project Files & Blueprints</li>
+                <li><span class="check"><svg class="svg-icon"><use href="#icon-check"></use></svg></span> Unlimited Calculators</li>
+                <li><span class="check"><svg class="svg-icon"><use href="#icon-check"></use></svg></span> Unlimited Estimates</li>
+                <li><span class="check"><svg class="svg-icon"><use href="#icon-check"></use></svg></span> Unlimited Invoices</li>
+                <li><span class="check"><svg class="svg-icon"><use href="#icon-check"></use></svg></span> Company Logo & QR</li>
+                <li><span class="check"><svg class="svg-icon"><use href="#icon-check"></use></svg></span> PDF & WhatsApp Share</li>
+                <li><span class="cross"><svg class="svg-icon"><use href="#icon-x"></use></svg></span> Client Management</li>
+                <li><span class="cross"><svg class="svg-icon"><use href="#icon-x"></use></svg></span> HR, Inventory & Expenses</li>
+                <li><span class="cross"><svg class="svg-icon"><use href="#icon-x"></use></svg></span> Project Files & Blueprints</li>
             </ul>
             <button class="btn btn-outline" style="background:var(--bg);" onclick="openActivationModal()">Activate Code</button>
         </div>
@@ -316,13 +359,13 @@
             <div class="sub-title" style="color:#03A9F4;">PRO PREMIUM</div>
             <div class="sub-price">₹199<span> / mo</span></div>
             <ul class="sub-list">
-                <li><span class="check">✔</span> Everything in PRO BASIC</li>
-                <li><span class="check">✔</span> Client CRM</li>
-                <li><span class="check">✔</span> Worker Management</li>
-                <li><span class="check">✔</span> Expense Tracker & Inventory</li>
-                <li><span class="check">✔</span> Project Files & Blueprints</li>
-                <li><span class="check">✔</span> Advanced Reports</li>
-                <li><span class="check">✔</span> Future Premium Modules</li>
+                <li><span class="check"><svg class="svg-icon"><use href="#icon-check"></use></svg></span> Everything in PRO BASIC</li>
+                <li><span class="check"><svg class="svg-icon"><use href="#icon-check"></use></svg></span> Client CRM</li>
+                <li><span class="check"><svg class="svg-icon"><use href="#icon-check"></use></svg></span> Worker Management</li>
+                <li><span class="check"><svg class="svg-icon"><use href="#icon-check"></use></svg></span> Expense Tracker & Inventory</li>
+                <li><span class="check"><svg class="svg-icon"><use href="#icon-check"></use></svg></span> Project Files & Blueprints</li>
+                <li><span class="check"><svg class="svg-icon"><use href="#icon-check"></use></svg></span> Advanced Reports</li>
+                <li><span class="check"><svg class="svg-icon"><use href="#icon-check"></use></svg></span> Future Premium Modules</li>
             </ul>
             <button class="btn btn-outline" style="background:var(--bg);" onclick="openActivationModal()">Activate Code</button>
         </div>
@@ -330,7 +373,7 @@
         <!-- Clean Contact Section -->
         <div style="margin-top: 30px; text-align: center; padding: 20px; border-top: 1.5px solid var(--border);">
             <div class="text-sm" style="color: var(--secondary); font-weight: 700; font-size: 1rem;">Contact Admin to Buy Activation Code</div>
-            <div style="font-weight: 900; font-size: 1.2rem; margin-top: 8px; color: var(--primary);">📧 autocoresolutions8@gmail.com</div>
+            <div style="font-weight: 900; font-size: 1.2rem; margin-top: 8px; color: var(--primary);">autocoresolutions8@gmail.com</div>
         </div>
     </div>
 </div>
@@ -403,7 +446,7 @@
             <div class="card">
                 <div class="flex flex-between">
                     <h3 class="section-heading" style="margin:0;">Client & Site Info</h3>
-                    <button class="btn btn-sm btn-secondary" onclick="loadClientFromCRM()">Pick CRM</button>
+                    <button class="btn btn-sm btn-secondary" onclick="loadClientFromCRM()"><svg class="svg-icon" style="width:16px;height:16px;margin-right:6px;"><use href="#icon-users"></use></svg> Pick CRM</button>
                 </div>
                 <div class="grid-2" style="margin-top:20px;">
                     <div class="form-group"><label>Client Name</label><input type="text" id="client-name" placeholder="Name"></div>
@@ -503,7 +546,7 @@
                 </div>
 
                 <div id="gst-lock-overlay" class="locked-overlay" style="display:none;" onclick="openSubscription()">
-                    <div class="lock-icon-ui">🔒</div>
+                    <div class="lock-icon-ui"><svg class="svg-icon"><use href="#icon-lock"></use></svg></div>
                 </div>
             </div>
 
@@ -525,6 +568,10 @@
             <div id="history-list"></div>
         </div>
     </div>
+    
+    <div class="fab" onclick="generateInvoice()" id="fab-save" title="Generate Invoice">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+    </div>
 </div>
 
 <!-- CRM (Customer Details) -->
@@ -544,7 +591,7 @@
         <div id="list-customers"></div>
 
         <div id="crm-lock-overlay" class="locked-overlay" style="display:none;" onclick="openSubscription()">
-            <div class="lock-icon-ui">🔒</div>
+            <div class="lock-icon-ui"><svg class="svg-icon"><use href="#icon-lock"></use></svg></div>
         </div>
     </div>
 </div>
@@ -610,7 +657,7 @@
         </div>
 
         <div id="manage-lock-overlay" class="locked-overlay" style="display:none;" onclick="openSubscription()">
-            <div class="lock-icon-ui">🔒</div>
+            <div class="lock-icon-ui"><svg class="svg-icon"><use href="#icon-lock"></use></svg></div>
         </div>
     </div>
 </div>
@@ -621,12 +668,13 @@
         <div class="flex flex-between" style="margin-bottom: 20px;">
             <h2 class="section-heading" style="margin:0;">Company Profile</h2>
             <div class="theme-toggle-btn" onclick="toggleTheme()" id="theme-btn">
-                <span id="theme-icon">🌙</span> <span id="theme-text">Dark</span>
+                <span id="theme-icon"><svg class="svg-icon" style="width:18px;height:18px;"><use href="#icon-moon"></use></svg></span> <span id="theme-text">Dark Mode</span>
             </div>
         </div>
         <div class="card">
-            <div class="form-group"><label>Contractor / Company Name</label><input type="text" id="set-name" placeholder="Royal Construction"></div>
+            <div class="form-group"><label>Company Name</label><input type="text" id="set-name" placeholder="Royal Construction"></div>
             <div class="form-group"><label>Contractor Name (Personal)</label><input type="text" id="set-contractor-name" placeholder="John Doe"></div>
+            <div class="form-group"><label>Contractor Address</label><textarea id="set-address" rows="3" placeholder="Full Business Address"></textarea></div>
             <div class="grid-2">
                 <div class="form-group"><label>Phone</label><input type="tel" id="set-phone" placeholder="9876543210"></div>
                 <div class="form-group"><label>GST Number</label><input type="text" id="set-gst" placeholder="22AAAAA0000A1Z5"></div>
@@ -643,12 +691,13 @@
             <div id="pro-settings-wrapper" style="position: relative; margin-top:30px; border-top:1.5px solid var(--border); padding-top:20px;">
                 <h3 class="section-heading" style="margin-bottom:16px;">Branding Assets</h3>
                 <div class="form-group"><label>Terms & Conditions</label><textarea id="set-terms" rows="3" placeholder="Payment due in 7 days..."></textarea></div>
-                <div class="form-group"><label>Logo Image</label><input type="file" id="set-logo" accept="image/*" style="padding:12px;"><div id="preview-logo" style="margin-top: 15px;"></div></div>
-                <div class="form-group"><label>Payment QR</label><input type="file" id="set-qr" accept="image/*" style="padding:12px;"><div id="preview-qr" style="margin-top: 15px;"></div></div>
-                <div class="form-group"><label>Digital Signature</label><input type="file" id="set-sign" accept="image/*" style="padding:12px;"><div id="preview-sign" style="margin-top: 15px;"></div></div>
+                
+                <div class="form-group"><label>Logo Image</label><input type="file" id="set-logo" accept="image/*" style="padding:12px;"><div id="preview-logo" class="preview-box"></div></div>
+                <div class="form-group"><label>Payment QR</label><input type="file" id="set-qr" accept="image/*" style="padding:12px;"><div id="preview-qr" class="preview-box"></div></div>
+                <div class="form-group"><label>Digital Signature</label><input type="file" id="set-sign" accept="image/*" style="padding:12px;"><div id="preview-sign" class="preview-box"></div></div>
                 
                 <div id="settings-lock-overlay" class="locked-overlay" style="display:none;" onclick="openSubscription()">
-                    <div class="lock-icon-ui">🔒</div>
+                    <div class="lock-icon-ui"><svg class="svg-icon"><use href="#icon-lock"></use></svg></div>
                 </div>
             </div>
 
@@ -669,7 +718,7 @@
             <div id="file-list"></div>
 
             <div id="files-lock-overlay" class="locked-overlay" style="display:none;" onclick="openSubscription()">
-                <div class="lock-icon-ui">🔒</div>
+                <div class="lock-icon-ui"><svg class="svg-icon"><use href="#icon-lock"></use></svg></div>
             </div>
         </div>
     </div>
@@ -681,7 +730,7 @@
             <button class="btn btn-secondary btn-sm" onclick="navTo('screen-projects', document.getElementById('nav-projects')); setView('history');" style="margin-bottom: 16px;">← Back to History</button>
             <div style="display: flex; gap: 16px; flex-direction: column;">
                 <button class="btn btn-whatsapp" onclick="shareInvoiceWhatsApp()">Share Invoice (WhatsApp PDF)</button>
-                <button class="btn btn-primary" onclick="downloadPDF()">Print / Save as PDF</button>
+                <button class="btn btn-primary" onclick="downloadPDF()"><svg class="svg-icon" style="margin-right:8px;"><use href="#icon-download"></use></svg> Print / Save as PDF</button>
             </div>
         </div>
         <div class="card invoice-preview" id="invoice-content" style="border:1px solid var(--border); box-shadow:none;"></div>
@@ -753,9 +802,7 @@ function loadOSDB() {
             OS_DB.customers.forEach((c, idx) => { if(!c.customerNum) c.customerNum = OS_DB.customers.length - idx; });
             saveOSDB('customers'); saveOSDB('customerCounter');
         }
-    } catch (e) {
-        console.error("OSDB Load Error", e);
-    }
+    } catch (e) { console.error("OSDB Load Error", e); }
 }
 function saveOSDB(key) { 
     try { localStorage.setItem('osdb_' + key, JSON.stringify(OS_DB[key])); }
@@ -816,7 +863,7 @@ function updateUIForPlan() {
     if(elm('manage-lock-overlay')) elm('manage-lock-overlay').style.display = isPremium ? 'none' : 'flex';
     if(elm('files-lock-overlay')) elm('files-lock-overlay').style.display = isPremium ? 'none' : 'flex';
 
-    ['set-logo','set-qr','set-sign','set-terms'].forEach(id => { if(elm(id)) elm(id).disabled = !isBasicOrPremium; });
+    ['set-logo','set-qr','set-sign','set-terms','set-address'].forEach(id => { if(elm(id)) elm(id).disabled = !isBasicOrPremium; });
     
     ['crm-name','crm-phone','crm-address','crm-notes'].forEach(id => { if(elm(id)) elm(id).disabled = !isPremium; });
     ['hr-name','hr-phone','hr-wage','hr-skill','exp-desc','exp-amt','exp-cat','inv-name','inv-qty','inv-unit'].forEach(id => { if(elm(id)) elm(id).disabled = !isPremium; });
@@ -947,8 +994,8 @@ function applyTheme(isDark) {
     localStorage.setItem('os_dark_mode', isDark);
     const icon = elm('theme-icon'); const txt = elm('theme-text');
     if(icon && txt) {
-        icon.innerText = isDark ? '🌙' : '☀️';
-        txt.innerText = isDark ? 'Dark' : 'Light';
+        icon.innerHTML = isDark ? '<svg class="svg-icon"><use href="#icon-moon"></use></svg>' : '<svg class="svg-icon"><use href="#icon-sun"></use></svg>';
+        txt.innerText = isDark ? 'Dark Mode' : 'Light Mode';
     }
     const meta = elm('meta-theme-color');
     if(meta) meta.setAttribute('content', isDark ? '#121212' : '#F0F4F8');
@@ -1008,7 +1055,7 @@ function renderEntityList(type) {
         let content = '';
         if(type === 'customers') {
             content = `
-            <div class="del-circle-btn" style="position:absolute; top:16px; right:16px;" onclick="removeEntity('${type}', ${item.id})">✕</div>
+            <div class="del-circle-btn" style="position:absolute; top:16px; right:16px;" onclick="removeEntity('${type}', ${item.id})"><svg><use href="#icon-x"></use></svg></div>
             <div style="padding-right: 32px;">
                 <div class="list-title" style="font-size:1.25rem; color:var(--primary);">Customer ${item.customerNum}: ${item.name}</div>
                 <div class="data-grid">
@@ -1020,7 +1067,7 @@ function renderEntityList(type) {
         }
         else if(type === 'inventory') {
             content = `
-            <div class="del-circle-btn" style="position:absolute; top:16px; right:16px;" onclick="removeEntity('${type}', ${item.id})">✕</div>
+            <div class="del-circle-btn" style="position:absolute; top:16px; right:16px;" onclick="removeEntity('${type}', ${item.id})"><svg><use href="#icon-x"></use></svg></div>
             <div class="data-grid" style="padding-right: 32px; margin-top:0;">
                 <div><div class="data-label">Material</div><div class="data-value" style="color:var(--primary); font-size:1.2rem;">${item.name}</div></div>
                 <div><div class="data-label">Last Updated</div><div class="data-value">${item.date}</div></div>
@@ -1032,14 +1079,14 @@ function renderEntityList(type) {
             content = `
             <div class="flex flex-between" style="width:100%">
                 <div><div class="list-title" style="font-size:1.15rem;">${item.name} <span style="font-weight:600; font-size:0.9rem; color:var(--text-light);">(${item.skill})</span></div><div class="text-bold" style="color:var(--success);">Wage: ₹${item.wage}/day</div></div>
-                <div class="del-circle-btn" onclick="removeEntity('${type}', ${item.id})">✕</div>
+                <div class="del-circle-btn" onclick="removeEntity('${type}', ${item.id})"><svg><use href="#icon-x"></use></svg></div>
             </div>`;
         }
         else if(type === 'expenses') {
             content = `
             <div class="flex flex-between" style="width:100%">
                 <div><div class="list-title" style="font-size:1.15rem;">${item.desc}</div><div class="text-sm">${item.date} | ${item.cat}</div></div>
-                <div class="flex gap-10"><div class="text-bold text-danger" style="font-size:1.25rem;">₹${item.amt}</div><div class="del-circle-btn" onclick="removeEntity('${type}', ${item.id})">✕</div></div>
+                <div class="flex gap-10"><div class="text-bold text-danger" style="font-size:1.25rem;">₹${item.amt}</div><div class="del-circle-btn" onclick="removeEntity('${type}', ${item.id})"><svg><use href="#icon-x"></use></svg></div></div>
             </div>`;
         }
         d.innerHTML = content; listEl.appendChild(d);
@@ -1055,7 +1102,7 @@ function loadClientFromCRM() {
         let match = OS_DB.customers.find(c => c.customerNum == parseInt(inputStr));
         if(match) {
             setVal('client-name', match.name); setVal('client-phone', match.phone); setVal('client-address', match.address);
-            showToast("Customer Data Loaded");
+            showToast("✅ Customer Data Loaded");
         } else { showToast("Customer not found.", true); }
     }
 }
@@ -1071,7 +1118,7 @@ function renderCivilTasks() {
         d.innerHTML = `
             <div class="flex flex-between" style="margin-bottom:12px;">
                 <input type="text" class="ct-name" data-id="${t.id}" value="${t.name}" placeholder="Task Name (e.g. Plaster, Floor)" style="width:75%; font-weight:700;">
-                <div class="del-circle-btn" style="width:30px; height:30px; font-size:12px;" onclick="removeCivilTask(${t.id})">✕</div>
+                <div class="del-circle-btn" style="width:34px; height:34px;" onclick="removeCivilTask(${t.id})"><svg><use href="#icon-x"></use></svg></div>
             </div>
             <div class="grid-3">
                 <input type="number" class="ct-l" data-id="${t.id}" value="${t.l}" placeholder="L (ft/m)">
@@ -1115,8 +1162,8 @@ function renderRooms() {
         const d = create('div'); d.className = 'card room-block';
         d.innerHTML = `
             <div class="flex flex-between">
-                <input type="text" class="room-name-input" data-rid="${r.id}" placeholder="Room ${rIdx+1}" value="${r.name || ''}" style="width:75%; font-weight:800; font-size:1.15rem; border:none; border-bottom:2px solid var(--border); border-radius:0; background:transparent; padding-left:0;">
-                <button class="btn btn-sm btn-danger" style="padding:10px 16px;" onclick="removeRoom(${r.id})">Delete Room</button>
+                <input type="text" class="room-name-input" data-rid="${r.id}" placeholder="Room ${rIdx+1}" value="${r.name || ''}" style="width:70%; font-weight:800; font-size:1.15rem; border:none; border-bottom:2px solid var(--border); border-radius:0; background:transparent; padding-left:0;">
+                <button class="btn btn-sm btn-danger" style="padding:10px 16px;" onclick="removeRoom(${r.id})"><svg class="svg-icon" style="width:16px;height:16px;"><use href="#icon-trash"></use></svg></button>
             </div>
             <div class="flex gap-10" style="margin-top:20px; padding:15px; background:var(--bg); border-radius:12px; border:1px solid var(--border);">
                 <label class="switch" style="transform:scale(0.9);"><input type="checkbox" class="c-tog" data-rid="${r.id}" ${r.ceiling.active?'checked':''}><span class="slider"></span></label>
@@ -1159,7 +1206,7 @@ function renderRooms() {
                         <span class="text-sm text-bold">x</span>
                         <input type="number" class="d-w" data-rid="${r.id}" data-wid="${w.id}" data-did="${ded.id}" placeholder="W" value="${ded.w||''}" style="padding:10px; width:45%;">
                     </div>
-                    <div class="del-circle-btn" onclick="removeDeduction(${r.id}, ${w.id}, ${ded.id})">✕</div>
+                    <div class="del-circle-btn" onclick="removeDeduction(${r.id}, ${w.id}, ${ded.id})"><svg><use href="#icon-x"></use></svg></div>
                 `;
                 dedCon.appendChild(dr);
             });
@@ -1207,7 +1254,7 @@ function renderExtras() {
             <input type="text" placeholder="Item Name" value="${e.name}" oninput="appData.extras[${idx}].name=this.value" style="width:100%">
             <div class="flex gap-10">
                 <input type="number" placeholder="Cost" value="${e.cost}" oninput="appData.extras[${idx}].cost=this.value; calculateTotal()" style="width:100%">
-                <div class="del-circle-btn" onclick="appData.extras.splice(${idx},1); renderExtras(); calculateTotal()">✕</div>
+                <div class="del-circle-btn" onclick="appData.extras.splice(${idx},1); renderExtras(); calculateTotal()"><svg><use href="#icon-x"></use></svg></div>
             </div>`;
         c.appendChild(d);
     });
@@ -1380,10 +1427,10 @@ function renderInvoiceHTML(rec) {
     let contractorName = s.contractorName ? `<div style="font-weight:800; margin-top:5px; color:#444;">Contractor: ${s.contractorName}</div>` : '';
     
     if(userPlan === 'basic' || userPlan === 'premium') {
-        logo = s.logo ? s.logo : logo;
-        qr = s.qr ? `<div class="text-center"><div class="text-sm text-bold" style="margin-bottom:8px;">Scan to Pay</div>${s.qr}</div>` : '';
+        logo = s.logo ? `<img src="${s.logo}" class="logo-img">` : logo;
+        qr = s.qr ? `<div class="text-center"><div class="text-sm text-bold" style="margin-bottom:8px;">Scan to Pay</div><img src="${s.qr}" class="qr-img"></div>` : '';
         if(s.bank) bank = `<div class="text-sm" style="margin-top:15px; padding:15px; background:#F8F9FA; border:1px solid #E0E6ED; border-radius:10px;"><strong>Bank Details:</strong><br>${s.bank}<br>A/C: ${s.acc}<br>IFSC: ${s.ifsc}</div>`;
-        if(s.sign) sign = `<div class="text-right" style="margin-top:30px">${s.sign}<br><div class="text-sm text-bold">Authorized Signatory</div></div>`;
+        if(s.sign) sign = `<div class="text-right" style="margin-top:30px"><img src="${s.sign}" class="sign-img"><br><div class="text-sm text-bold">Authorized Signatory</div></div>`;
         if(s.terms) terms = `<div class="text-sm" style="margin-top:30px; font-size:0.85rem; color:#555;"><strong>Terms & Conditions:</strong><br>${s.terms.replace(/\n/g, '<br>')}</div>`;
     }
 
@@ -1398,7 +1445,7 @@ function renderInvoiceHTML(rec) {
     if(rec.files && rec.files.length > 0) {
         attachments = '<div style="margin-top:40px; page-break-before: always;"><h4 style="border-bottom:2px solid #E0E6ED; padding-bottom:12px;">Project Attachments & Blueprints</h4><div style="display:flex; flex-wrap:wrap; gap:16px; margin-top:20px;">';
         rec.files.forEach(f => {
-            if(f.data.startsWith('data:image')) attachments += `<img src="${f.data}" style="width:100%; max-width:320px; border:1.5px solid #E0E6ED; border-radius:12px; padding:6px;">`;
+            if(f.data.startsWith('data:image')) attachments += `<img src="${f.data}" style="max-width:320px; border:1.5px solid #E0E6ED; border-radius:12px; padding:6px; object-fit:contain; display:block;">`;
         });
         attachments += '</div></div>';
     }
@@ -1407,8 +1454,13 @@ function renderInvoiceHTML(rec) {
         <div style="padding:40px; font-family:var(--font-main);">
             <div class="invoice-header"><div>${logo}</div><div class="text-right"><h2 style="color:var(--primary); letter-spacing:1px; font-size:2rem;">INVOICE</h2><div class="text-bold" style="font-size:1.1rem; margin-top:5px;">#${rec.invNo}</div><div class="text-sm" style="margin-top:5px;">${rec.date}</div></div></div>
             <div class="flex flex-between" style="margin-bottom:40px; align-items:flex-start;">
-                <div><div class="text-bold" style="color:var(--secondary); font-size:1.15rem; border-bottom:1.5px solid #E0E6ED; padding-bottom:6px; margin-bottom:12px;">FROM:</div><div class="text-bold" style="font-size:1.2rem;">${s.name||''}</div>${contractorName}<div class="text-sm" style="margin-top:4px;">${s.phone||''}</div>
-                <div class="text-sm" style="margin-top:4px;">${(s.gst)?'GST: '+s.gst:''}</div><div class="text-sm">${(s.pan)?'PAN: '+s.pan:''}</div></div>
+                <div><div class="text-bold" style="color:var(--secondary); font-size:1.15rem; border-bottom:1.5px solid #E0E6ED; padding-bottom:6px; margin-bottom:12px;">FROM:</div>
+                <div class="text-bold" style="font-size:1.2rem;">${s.name||''}</div>
+                ${contractorName}
+                ${s.address ? `<div class="text-sm" style="margin-top:5px; white-space:pre-wrap;">${s.address}</div>` : ''}
+                <div class="text-sm" style="margin-top:5px;">${s.phone||''}</div>
+                <div class="text-sm" style="margin-top:5px;">${(s.gst)?'GST: '+s.gst:''}</div><div class="text-sm">${(s.pan)?'PAN: '+s.pan:''}</div></div>
+                
                 <div class="text-right"><div class="text-bold" style="color:var(--secondary); font-size:1.15rem; border-bottom:1.5px solid #E0E6ED; padding-bottom:6px; margin-bottom:12px;">BILL TO:</div><div class="text-bold" style="font-size:1.2rem;">${rec.client.name||''}</div><div class="text-sm" style="margin-top:4px;">${rec.client.phone||''}</div><div class="text-sm" style="margin-top:4px;">${rec.client.addr||''}</div></div>
             </div>
             <table style="width:100%; border-collapse:collapse; margin-bottom:30px;">
@@ -1483,8 +1535,8 @@ function renderHistoryCard(r, i, container) {
             </div>
             <div class="flex">
                 <div class="text-primary text-bold" style="margin-right:20px; font-size:1.35rem;">₹${amt.toFixed(0)}</div>
-                <span class="edit-icon" onclick="event.stopPropagation(); editInvoice(${i})" style="margin-right:12px; font-size:1.4rem;">✎</span>
-                <span class="remove-icon" onclick="event.stopPropagation(); deleteInvoice(${i})" style="font-size:1.5rem;"></span>
+                <span class="edit-icon flex" onclick="event.stopPropagation(); editInvoice(${i})" style="margin-right:12px; font-size:1.4rem;"><svg class="svg-icon"><use href="#icon-edit"></use></svg></span>
+                <span class="remove-icon flex" onclick="event.stopPropagation(); deleteInvoice(${i})" style="font-size:1.5rem;"><svg class="svg-icon"><use href="#icon-trash"></use></svg></span>
             </div>
         </div>`;
     container.appendChild(d);
@@ -1561,12 +1613,12 @@ function renderFiles() {
         const d = create('div'); d.className = 'flex flex-between card'; d.style.padding='20px'; d.style.marginTop='15px';
         d.innerHTML = `
             <div class="flex gap-10">
-                ${isImg ? `<img src="${f.data}" style="width:50px; height:50px; border-radius:8px; object-fit:cover;">` : `<div style="font-size:32px;">📄</div>`}
+                ${isImg ? `<img src="${f.data}" style="width:50px; height:50px; border-radius:8px; object-fit:cover;">` : `<div style="font-size:32px;" class="flex"><svg class="svg-icon"><use href="#icon-file"></use></svg></div>`}
                 <div><div class="text-bold" style="font-size:1.1rem">${f.name}</div><div class="text-sm">${f.date}</div></div>
             </div>
             <div class="flex gap-10">
-                <a href="${f.data}" download="${f.name}" style="text-decoration:none; color:var(--primary); font-size:1.4rem;">⬇️</a>
-                <span class="remove-icon" onclick="removeEntity('files', ${f.id}); renderFiles();"></span>
+                <a href="${f.data}" download="${f.name}" class="flex" style="text-decoration:none; color:var(--primary); font-size:1.4rem;"><svg class="svg-icon"><use href="#icon-download"></use></svg></a>
+                <span class="del-circle-btn" onclick="removeEntity('files', ${f.id}); renderFiles();"><svg><use href="#icon-x"></use></svg></span>
             </div>`;
         c.appendChild(d);
     });
@@ -1574,9 +1626,11 @@ function renderFiles() {
 
 function saveSettings() {
     const s = { 
-        name: val('set-name'), contractorName: val('set-contractor-name'), phone: val('set-phone'), gst: val('set-gst'), pan: val('set-pan'),
+        name: val('set-name'), contractorName: val('set-contractor-name'), address: val('set-address'), phone: val('set-phone'), gst: val('set-gst'), pan: val('set-pan'),
         bank: val('set-bank'), acc: val('set-acc'), ifsc: val('set-ifsc'), terms: val('set-terms'),
-        logo: elm('preview-logo').innerHTML, qr: elm('preview-qr').innerHTML, sign: elm('preview-sign').innerHTML
+        logo: elm('preview-logo').innerHTML.includes('img') ? elm('preview-logo').querySelector('img').src : '', 
+        qr: elm('preview-qr').innerHTML.includes('img') ? elm('preview-qr').querySelector('img').src : '', 
+        sign: elm('preview-sign').innerHTML.includes('img') ? elm('preview-sign').querySelector('img').src : ''
     };
     localStorage.setItem('paintflow_settings', JSON.stringify(s));
     showToast("✅ Company Profile Saved Successfully");
@@ -1586,9 +1640,11 @@ function loadSettings() {
     try {
         const s = JSON.parse(localStorage.getItem('paintflow_settings'));
         if(s) { 
-            setVal('set-name', s.name); setVal('set-contractor-name', s.contractorName); setVal('set-phone', s.phone); setVal('set-gst', s.gst); setVal('set-pan', s.pan);
+            setVal('set-name', s.name); setVal('set-contractor-name', s.contractorName); setVal('set-address', s.address); setVal('set-phone', s.phone); setVal('set-gst', s.gst); setVal('set-pan', s.pan);
             setVal('set-bank', s.bank); setVal('set-acc', s.acc); setVal('set-ifsc', s.ifsc); setVal('set-terms', s.terms);
-            if(s.logo) elm('preview-logo').innerHTML = s.logo; if(s.qr) elm('preview-qr').innerHTML = s.qr; if(s.sign) elm('preview-sign').innerHTML = s.sign;
+            if(s.logo) elm('preview-logo').innerHTML = `<img src="${s.logo}" class="logo-img">`; 
+            if(s.qr) elm('preview-qr').innerHTML = `<img src="${s.qr}" class="qr-img">`; 
+            if(s.sign) elm('preview-sign').innerHTML = `<img src="${s.sign}" class="sign-img">`;
         }
         renderFiles();
     } catch(e) {}
@@ -1606,7 +1662,12 @@ function factoryReset() { if(confirm('Erase ALL DATA? Cannot be undone.')) { loc
 ['set-logo','set-qr','set-sign'].forEach(id => {
     elm(id).addEventListener('change', e => {
         const r = new FileReader(); 
-        r.onload = ev => elm(id.replace('set-','preview-')).innerHTML = `<img src="${ev.target.result}" class="${id==='set-qr'?'qr-img':'logo-img'}">`;
+        r.onload = ev => {
+            let className = 'logo-img';
+            if(id === 'set-qr') className = 'qr-img';
+            if(id === 'set-sign') className = 'sign-img';
+            elm(id.replace('set-','preview-')).innerHTML = `<img src="${ev.target.result}" class="${className}">`;
+        }
         r.readAsDataURL(e.target.files[0]);
     });
 });
